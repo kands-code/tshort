@@ -1,2 +1,2 @@
-# ignore build file
-pdf/
+# ignore all pdf files
+**/*.pdf

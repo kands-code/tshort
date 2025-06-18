@@ -1,9 +1,15 @@
+// 设置许可证文字，
+// 设置语言为英语，字体大小为 9pt
 #set text(lang: "en", size: 9pt)
+// 设置行间距为 1em，并且优化分行
 #set par(leading: 1em, linebreaks: "optimized")
-#show raw: set text(font: "Sarasa Fixed Slab SC", size: 8pt)
+// 设置等宽字体大小为 8pt
+#show raw: set text(size: 8pt)
+// 设置标题显示
 #show heading: it => if it.level == 1 {
+  // 对于一级标题，居中显示，只显示标题内容
   align(center)[
-    #v(6.4em)
+    #v(4.8em)
     #block(below: 3.2em)[
       #text(size: 1.6em)[
         #it.body
@@ -11,27 +17,34 @@
     ]
   ]
 } else {
+  // 其他标题使用无衬线字体，顶格，只显示标题内容
   block(above: 1.6em, below: 1.6em)[
     #text(size: 1.2em, font: "Sarasa Gothic SC")[
       #it.body
     ]
   ]
 }
+// 在目录中隐藏许可证内容的二级标题
 #show heading.where(level: 2): set heading(outlined: false)
+// 设置许可证页眉
 #set page(
   header: context {
+    // 获取所有一级标题位置
     let positions = query(heading.where(level: 1)).map(it => it.location().page())
+    // 获取当前页面真实位置
     let current_page = here().page()
-    let logic_page = counter(page).get().first()
     if current_page in positions {
+      // 如果是一级标题，不显示页眉
       []
     } else {
       align(center + bottom)[
         #text(weight: "bold")[
-          #if calc.even(logic_page) [
-            #counter(page).display() #h(1fr)GNU Free Documentation License
+          #if calc.even(current_page) [
+            // 否则对于偶数，格式为 <页码 间隔 标题>
+            #counter(page).display()#h(1fr)GNU Free Documentation License
           ] else [
-            #h(1fr) #counter(page).display()
+            // 对于奇数，格式为 <间隔 页码>
+            #h(1fr)#counter(page).display()
           ]
         ]
         #v(-0.48em)
@@ -43,6 +56,7 @@
 
 = GNU Free Documentation License
 
+// 居中显示日期和版本
 #align(center)[
   Version 1.3, 3 November 2008
 ]

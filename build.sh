@@ -1,1 +1,1 @@
-typst compile "src/tshort.typ" "pdf/tshort.pdf"
+typst compile "src/tshort.typ" "tshort.pdf"
