@@ -25,22 +25,16 @@
 #pagebreak()
 
 #align(center)[
-  #box(width: 72%)[
+  #box(width: 80%)[
     #align(left)[
-      #text(size: 0.8em)[
-        Copyright $copyright$ 2025 by Kevin Stephen.
-
-        本书所有权利归 Kevin Stephen 所有。
-
-        本书可自由传阅、分享，但不得随意修改、再版或用于商业目的。
-
-        任何使用本书的行为必须遵守以下条件：
-        - 不得修改本书的内容、格式或结构。
-        - 不得再版或复制本书的任何部分。
-        - 不得将本书用于商业目的，包括但不限于出售、出租或出借。
-        - 必须保留本书的原创作者信息和版权声明。
-
-        任何违反上述条件的行为均视为侵犯版权，作者保留追究法律责任的权利。
+      #text(size: 0.8em, lang: "en")[
+        Copyright #math.copyright 2025 Kevin Stephen. \
+        Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.3
+        or any later version published by the Free Software Foundation;
+        with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+        A copy of the license is included in the section entitled "GNU
+        Free Documentation License".
       ]
     ]
   ]
