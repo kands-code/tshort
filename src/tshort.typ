@@ -7,31 +7,41 @@
 )
 // 设置页面大小为 a4
 #set page(paper: "a4")
-// 启用段落自动对齐功能
+// 启用段落自动调整功能
 #set par(justify: true)
 // 设置引用格式为 gb-7714-2015-numeric
 #set cite(style: "gb-7714-2015-numeric", form: "normal")
 // 设置 figure 的编号方式
 #set figure(numbering: it => [ #counter(heading).get().first().#it ])
+// 设置 footnote 字体大小为 0.8em
+#show footnote.entry: set text(size: 0.8em)
 // 设置 figure 的上下外间距
-#show figure: set block(above: 3.2em, below: 1.6em)
+#show figure: set block(above: 1.6em, below: 1.6em)
+// 设置 figure 标题的上下边距
+#show figure.caption: it => {
+  // 标题字体应该要略小于正文字体
+  set text(size: 0.96em)
+  v(0.8em) + it + v(0.32em)
+}
 // 设置链接和引用的的文本颜色
-#show link: set text(fill: rgb(37, 95, 56))
-#show ref: set text(fill: rgb(31, 125, 83))
+#show link: set text(fill: rgb(87, 123, 193))
+#show ref: set text(fill: rgb(52, 76, 183))
 // 设置数学字体为 STIX Two Math，字体大小为 12pt
 #show math.equation: set text(font: "STIX Two Math", size: 12pt)
-// 设置等宽字体为 Sarasa Fixed Slab SC，字体大小为 10pt
-#show raw: set text(font: "Sarasa Fixed Slab SC", size: 10pt)
+// 设置等宽字体为 Sarasa Fixed Slab SC，字体大小为 11pt
+#show raw: set text(font: "Sarasa Fixed Slab SC", size: 11pt)
 // 设置标题格式
 #show heading: it => if it.level == 1 {
+  // 重置脚注计数器，从 0 开始
+  counter(footnote).update(0)
   // 对于一级标题，居中
   align(center)[
-    // 上外边距固定为 4.8em
-    #v(4.8em)
-    // 下边距为 3.2em
-    #block(below: 3.2em)[
-      // 标题字体大小为 1.6em
-      #text(size: 1.6em)[
+    // 标题字体大小为 1.6em
+    #text(size: 1.6em)[
+      // 上外边距固定为 3.2em
+      #v(3.2em)
+      // 下边距为 2.4em
+      #block(below: 2.4em)[
         #if it.numbering == none {
           // 对于没有编号的标题，只显示标题内容
           it.body
@@ -45,10 +55,10 @@
 } else if it.level == 2 {
   // 对于二级标题，居中
   align(center)[
-    // 设置上外边距为 3.2em，下外边距为 1.6em
-    #block(above: 3.2em, below: 1.6em)[
-      // 设置标题字体大小为 1.28em
-      #text(size: 1.28em)[
+    // 设置标题字体大小为 1.28em
+    #text(size: 1.28em)[
+      // 设置上外边距为 3.2em，下外边距为 1.6em
+      #block(above: 3.2em, below: 1.6em)[
         #if it.numbering == none [
           // 对于没有编号的标题，只显示标题内容
           #it.body
@@ -61,10 +71,10 @@
   ]
 } else {
   // 对于二级以下的标题，如三级标题
-  // 设置上外边距为 1.6em，下外边距为 1em
-  block(above: 1.6em, below: 1em)[
-    // 设置标题字体大小为 1.28em
-    #text(size: 1.2em)[
+  // 设置标题字体大小为 1.2em
+  text(size: 1.2em)[
+    // 设置上外边距为 1.6em，下外边距为 1.2em
+    #block(above: 1.6em, below: 1.2em)[
       //! 二级以下的标题一定有编号，所以按照有编号的格式显示
       #counter(heading).display(it.numbering)#h(1em)#it.body
     ]
@@ -148,7 +158,11 @@
 // 设置当前页面为逻辑上的第一页
 #counter(page).update(1)
 // 设置段落缩进为 2em，所有段落都缩进
-#set par(first-line-indent: (amount: 2em, all: true))
+#set par(
+  first-line-indent: (amount: 2em, all: true),
+  leading: 0.8em, // 默认是 0.65em，稍微增加行间距
+  linebreaks: "optimized", // 优化分行
+)
 // 引入前言
 #include "prelude.typ"
 // 设置目录的页眉显示
@@ -197,9 +211,9 @@
     indent: it => if it == 0 {
       0em
     } else if it == 1 {
-      1.7em
+      1.6em
     } else {
-      3.5em
+      3.2em
     },
   )
 ]

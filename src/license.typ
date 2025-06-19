@@ -1,10 +1,10 @@
 // 设置许可证文字，
 // 设置语言为英语，字体大小为 9pt
 #set text(lang: "en", size: 9pt)
-// 设置行间距为 1em，并且优化分行
-#set par(leading: 1em, linebreaks: "optimized")
-// 设置等宽字体大小为 8pt
-#show raw: set text(size: 8pt)
+// 设置行间距为 1em
+#set par(leading: 1em)
+// 设置等宽字体大小为 9pt
+#show raw: set text(size: 9pt)
 // 设置标题显示
 #show heading: it => if it.level == 1 {
   // 对于一级标题，居中显示，只显示标题内容

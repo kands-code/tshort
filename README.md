@@ -29,7 +29,17 @@ or consult the source file `license.typ`.
 也可以直接使用 `typst` 进行编译：
 
 ```bash
-typst compile "src/tshort.typ" "tshort.pdf"
+typst compile "src/tshort.typ" --font-path "./fonts" "tshort.pdf"
 ```
 
 生成后的文档可以在项目根目录下找到。
+
+## 字体
+
+下面是本文档所使用的字体列表：
+
+- 衬线字体：Source Han Serif CN
+- 无衬线字体：Sarasa Gothic SC
+- 等宽字体：Sarasa Fixed Slab SC
+- 数学字体：STIX Two Math
+- 其他字体：Zhuque Fangsong

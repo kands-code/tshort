@@ -1,0 +1,12 @@
+# Set default behavior to automatically normalize line endings.
+* text=auto
+text eol=lf
+*.png binary
+*.ttf binary
+*.otf binary
+
+# Windows-specific scripts
+*.bat text eol=crlf
+
+# exclude fonts file from linguist
+fonts/* linguist-generated=true
