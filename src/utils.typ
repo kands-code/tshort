@@ -135,10 +135,33 @@
       fill: background,
       stroke: stroke,
       // 设置合理内边距
-      inset: 0.8em,
+      inset: 1em,
       radius: radius,
     )[
+      // 恢复默认排版
+      #set align(left)
+      #set par(first-line-indent: 0em, justify: false)
       #body
     ],
+  )
+}
+
+#let code-and-show(
+  body,
+  code-func: it => code-block(
+    linenumber: true,
+    top-bottom-stroke: true,
+    stroke-thickness: 0.04em,
+  )[#it],
+  columns: (1fr, 1fr),
+  align: center + horizon,
+) = {
+  grid(
+    columns: columns,
+    align: align,
+    code-func[#body],
+    show-block[
+      #eval(body.text, mode: "markup")
+    ]
   )
 }

@@ -45,5 +45,14 @@ typst compile "src/tshort.typ" \
 - 衬线字体：Source Han Serif SC
 - 无衬线字体：Sarasa Gothic SC
 - 等宽字体：Sarasa Fixed Slab SC
-- 数学字体：STIX Two Math
+- 数学字体：New Computer Modern Math
+- 英文字体：New Computer Modern
 - 其他字体：Zhuque Fangsong，Noto Color Emoji
+
+对应仓库：
+
+- Source Han Serif: <https://github.com/adobe-fonts/source-han-serif>
+- Sarasa Gothic：<https://github.com/be5invis/Sarasa-Gothic>
+- New Computer Modern：<https://ctan.org/pkg/newcomputermodern>
+- 朱雀仿宋: <https://github.com/TrionesType/zhuque>
+- Noto Emoji: <https://github.com/googlefonts/noto-emoji>

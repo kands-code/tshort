@@ -1,14 +1,19 @@
 // 设置文档主要字体为 Source Han Serif，
 // 以及文档语言为中文，默认字体大小为 12pt
-// 默认为所有字体设置 Noto Color Emoji 作为 emoji fallback
 #set text(
   size: 12pt,
   lang: "zh",
   fill: black,
-  font: ("Source Han Serif SC", "Noto Color Emoji"),
+  // 由于生成文档时默认禁用系统字体，
+  // Emoji 字体默认回退为 Noto Color Emoji
+  font: (
+    (name: "New Computer Modern", covers: "latin-in-cjk"),
+    (name: "Noto Color Emoji", covers: regex("\p{Emoji}")),
+    "Source Han Serif SC",
+  ),
 )
-// 设置数学字体为 STIX Two Math，字体大小为 12pt
-#show math.equation: set text(size: 12pt, font: "STIX Two Math")
+// 设置数学字体为 New Computer Modern Math，字体大小为 12pt
+#show math.equation: set text(size: 12pt, font: "New Computer Modern Math")
 // 设置等宽字体为 Sarasa Fixed Slab SC，字体大小为 11pt
 #show raw: set text(size: 11pt, font: "Sarasa Fixed Slab SC")
 // 对于普通行内等宽内容，字体颜色设置为 rgb(135, 35, 65)，与普通内容区分
@@ -92,8 +97,8 @@
   // 对于三级及以下标题，设置标题字体大小为 1.08em
   text(size: 1.08em)[
     #block(above: 1.6em, below: 1.2em)[
-      //! 按照有编号的格式显示
-      #counter(heading).display(it.numbering)#h(1em)#it.body
+      // 不显示编号
+      #it.body
     ]
   ]
 }
@@ -244,8 +249,6 @@
   target: figure.where(kind: raw),
 )
 
-#pagebreak()
-
 // ---------
 //  正文部分
 // ---------
@@ -317,7 +320,8 @@
             (
               // 通过 location 定位获取真实的 counter(heading)，
               // 然后格式化显示
-              numbering("1.1", ..counter(heading).at(level2_heading.at(0)))
+              sym.section
+                + numbering("1.1", ..counter(heading).at(level2_heading.at(0)))
                 + h(1em) // 编号与标题内容间隔 1em
                 + level2_heading.at(1).body // 标题内容
                 + h(1fr) // 间隔

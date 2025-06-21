@@ -28,7 +28,7 @@
   #box(width: 80%)[
     #align(left)[
       #text(size: 0.8em, lang: "en")[
-        Copyright #math.copyright 2025 Kevin Stephen. \
+        Copyright #sym.copyright 2025 Kevin Stephen. \
         Permission is granted to copy, distribute and/or modify this document
         under the terms of the GNU Free Documentation License, Version 1.3
         or any later version published by the Free Software Foundation;

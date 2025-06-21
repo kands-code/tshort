@@ -1,6 +1,6 @@
 // 设置许可证文字，
-// 设置语言为英语，字体大小为 9pt
-#set text(lang: "en", size: 9pt)
+// 设置语言为英语，字体大小为 9pt，字体为 New Computer Modern
+#set text(lang: "en", font: "New Computer Modern", size: 9pt)
 // 设置行间距为 1em
 #set par(leading: 1em)
 // 设置等宽字体大小为 9pt
@@ -17,9 +17,9 @@
     ]
   ]
 } else {
-  // 其他标题使用无衬线字体，顶格，只显示标题内容
+  // 其他标题使用英文无衬线字体，顶格，只显示标题内容
   block(above: 1.6em, below: 1.6em)[
-    #text(size: 1.2em, font: "Sarasa Gothic SC")[
+    #text(size: 1.2em, font: "New Computer Modern Sans")[
       #it.body
     ]
   ]
@@ -62,7 +62,7 @@
 ]
 #v(3.2em)
 
-Copyright #math.copyright 2000, 2001, 2002, 2007, 2008 Free Software Foundation,
+Copyright #sym.copyright 2000, 2001, 2002, 2007, 2008 Free Software Foundation,
 Inc. <`https://fsf.org/`>
 
 Everyone is permitted to copy and distribute verbatim copies of this

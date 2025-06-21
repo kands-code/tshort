@@ -1,4 +1,4 @@
-#import "../utils.typ": abstract, kbd, code-card, code-block, show-block
+#import "../utils.typ": abstract, kbd, code-card, code-block, show-block, code-and-show
 
 = Typst 的基本概念
 
@@ -120,9 +120,9 @@ Linux 或 macOS 等 \*nix#footnote[
   )[Tinymist 插件]，你可以使用编辑器提供的“显示导出的 PDF”按钮生成 PDF 文档。
 
 / 在线编辑器: 如果使用 Typst 在线编辑器，
-  你可以通过 #kbd[file] #math.triangle.filled.small.r #kbd[Quick export PDF]，
-  或者 #kbd[file] #math.triangle.filled.small.r #kbd[Export as]
-  #math.triangle.filled.small.r #kbd[PDF]，
+  你可以通过 #kbd[file] #sym.triangle.filled.small.r #kbd[Quick export PDF]，
+  或者 #kbd[file] #sym.triangle.filled.small.r #kbd[Export as]
+  #sym.triangle.filled.small.r #kbd[PDF]，
   或者使用 #kbd[Shift]+#kbd[Ctrl]+#kbd[S] 都可以下载导出后的 PDF 文档。
 
 / 命令行: 如果使用命令行，需要打开对应系统终端，在源代码所在目录下输入：
@@ -145,7 +145,7 @@ Linux 或 macOS 等 \*nix#footnote[
   )[
     ```typ
     // 请将这里字体替换为系统中有的中文字体
-    #set text(font: "Source Han Serif", lang: "zh")
+    #set text(font: "Source Han Serif SC", lang: "zh")
 
     你好👋，世界🌏!
     ```
@@ -190,33 +190,17 @@ Typst 的源代码是以纯文本文件的形式编写的。
   在大括号的范围内都属于代码模式，不需要使用 `#`。
   如果想要在代码模式中使用标记模式，需要使用 `[]`，例如：
 
-  #grid(columns: (1fr, 1fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-      #{
-        let a = 10
-        let sum = 0
-        while a > 0 {
-          sum = sum + a
-          a = a - 1
-        }
-        [sum 等于 #sum]
+  #code-and-show[```typ
+    #{
+      let a = 10
+      let sum = 0
+      while a > 0 {
+        sum = sum + a
+        a = a - 1
       }
-      ```
-    ]
-  ][
-    #show-block[
-      #{
-        let a = 10
-        let sum = 0
-        while a > 0 {
-          sum = sum + a
-          a = a - 1
-        }
-        [sum 等于 #sum]
-      }
-    ]
-  ]
+      [sum 等于 #sum]
+    }
+    ```]
 
 / 注释: 如果在编写 Typst 文档的过程中想要对文档中的一些内容做一些标注，则可以使用注释。
   例如要说明这一部分是第一章的内容，则可以使用：
@@ -224,21 +208,12 @@ Typst 的源代码是以纯文本文件的形式编写的。
   #h(-2em)这一行内， `//` 后的所有内容都会被 Typst 忽略，且不会被渲染。
 
   除了使用 `//`，还可以使用 `/* */` 来表示多行的注释，例如：
-  #grid(columns: (1fr, 1fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-      这个会渲染 /* 这里
-          还有这里
-      不会被渲染 */ 这里可以
-      ```
-    ]
-  ][
-    #show-block[
-      这个会渲染 /* 这里
-                     还有这里
-                 不会被渲染 */ 这里可以
-    ]
-  ]
+
+  #code-and-show[```typ
+    这个会渲染 /* 这里
+        还有这里
+    不会被渲染 */ 这里可以
+    ```]
 
 === Typst 的脚本语法
 
@@ -272,33 +247,17 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
   / 相互嵌套: 下面的示例展示了代码块与内容块的相互嵌套：
 
-#grid(columns: (3fr, 2fr), align: center + horizon)[
-  #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-    ```typ
-    #{
-      let a = [from]
-      let b = [*world* #{
-          let stars = emoji.star.arc
-          stars + stars
-        }]
-      [hello ]
-      a + [ the ] + b
-    }
-    ```
-  ]
-][
-  #show-block[
-    #{
-      let a = [from]
-      let b = [*world* #{
-          let stars = emoji.star.arc
-          stars + stars
-        }]
-      [hello ]
-      a + [ the ] + b
-    }
-  ]
-]
+#code-and-show(columns: (3fr, 2fr))[```typ
+  #{
+    let a = [from]
+    let b = [*world* #{
+        let stars = emoji.star.arc
+        stars + stars
+      }]
+    [hello ]
+    a + [ the ] + b
+  }
+  ```]
 
 / 绑定与解构: 在之前的示例中，已经展示了绑定（binding），
   即使用 `let` 来定义变量，基本语法是：```typc let 变量名 = 值```。
@@ -308,57 +267,28 @@ Typst 的源代码是以纯文本文件的形式编写的。
   此时 `变量名` 的值是 ```typc none```。
   在代码块中定义的变量只有在该代码块中可以访问，例如：
 
-  #grid(columns: (3fr, 2fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-      #{
-        let a1 = 1
-        let res = []
-        {
-          let a2 = 2
-          res = res + [#a2]
-        }
-        // a2 无法访问
-        res = res + [#a1]
-        res
+  #code-and-show(columns: (3fr, 2fr))[```typ
+    #{
+      let a1 = 1
+      let res = []
+      {
+        let a2 = 2
+        res = res + [#a2]
       }
-      ```
-    ]
-  ][
-    #show-block[
-      #{
-        let a1 = 1
-        let res = []
-        {
-          let a2 = 2
-          res = res + [#a2]
-        }
-        // a2 无法访问
-        res = res + [#a1]
-        res
-      }
-    ]
-  ]
+      // a2 无法访问
+      res = res + [#a1]
+      res
+    }
+    ```]
 
   `值` 可以是任意 Typst 元素，包括*函数*，例如：
 
-  #grid(columns: (3fr, 2fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-      #{
-        let f(x) = x + 2
-        [#f(40)]
-      }
-      ```
-    ]
-  ][
-    #show-block[
-      #{
-        let f(x) = x + 2
-        [#f(40)]
-      }
-    ]
-  ]
+  #code-and-show(columns: (3fr, 2fr))[```typ
+    #{
+      let f(x) = x + 2
+      [#f(40)]
+    }
+    ```]
 
   使用 `let` 还可以解构一些结构，例如数组，字典。
   数组就是一系列元素，使用圆括号表示，例如：```typc (1, "2", [三])```；
@@ -368,44 +298,21 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
   下面是解构字典的语法示例：
 
-  #grid(columns: (3fr, 2fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-        #let 字典 = (
-          你: "you",
-          我: "I",
-          他: "he",
-        )
-        #let (你,) = 字典
-        你是#你。\
-        #let (他: ta) = 字典
-        他是#ta。\
-        #let (他, ..人) = 字典
-        #for (中, en) in 人 [
-          #中;是#en。\
-        ]
-      ```
-    ]
-  ][
-    #show-block[
-      #set par(first-line-indent: 0em)
-      #align(left)[
-        #let 字典 = (
-          你: "you",
-          我: "I",
-          他: "he",
-        )
-        #let (你,) = 字典
-        你是#你。\
-        #let (他: ta) = 字典
-        他是#ta。\
-        #let (他, ..人) = 字典
-        #for (中, en) in 人 [
-          #中;是#en。\
-        ]
+  #code-and-show(columns: (3fr, 2fr))[```typ
+    #let 字典 = (
+        你: "you",
+        我: "I",
+        他: "he",
+      )
+      #let (你,) = 字典
+      你是#你。\
+      #let (他: ta) = 字典
+      他是#ta。\
+      #let (他, ..人) = 字典
+      #for (中, en) in 人 [
+        #中;是#en。\
       ]
-    ]
-  ]
+    ```]
 
   其中 `..人` 表示将字典中除了 `他` 键以外的所有键值对都收集到 `人` 上。
   `(他: ta)` 表示找到字典中 `他` 键对应的值，然后绑定到 `ta` 上。
@@ -416,30 +323,14 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
   下面是列表的解构语法示例：
 
-  #grid(columns: (2fr, 1fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-      #let (x, y) = (1, 2)
-      坐标是 $angle.l#x, #y angle.r$。
+  #code-and-show(columns: (2fr, 1fr))[```typ
+    #let (x, y) = (1, 2)
+    坐标是 $angle.l#x, #y angle.r$。
 
-      #let (a, _, .., b) = (1, 2, 3, 4, 5)
-      第一个元素是 #a。\
-      最后一个元素是 #b。
-      ```
-    ]
-  ][
-    #show-block[
-      #set par(first-line-indent: 0em)
-      #align(left)[
-        #let (x, y) = (1, 2)
-        坐标是 $angle.l#x, #y angle.r$。
-
-        #let (a, _, .., b) = (1, 2, 3, 4, 5)
-        第一个元素是 #a。\
-        最后一个元素是 #b。
-      ]
-    ]
-  ]
+    #let (a, _, .., b) = (1, 2, 3, 4, 5)
+    第一个元素是 #a。\
+    最后一个元素是 #b。
+    ```]
 
   其中 `_` 表示忽略这个位置的元素，在示例中对应 `2`；
   `..` 表示忽略其他元素，在示例中对应 `3, 4`，
@@ -449,25 +340,13 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
   在赋值中也可以使用解构，例如：
 
-  #grid(columns: (3fr, 2fr), align: center + horizon)[
-    #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-      ```typ
-      #{
-        let (a, b) = (1, 2)
-        (a, b) = (b, a)
-        [a是#a，b是#b。]
-      }
-      ```
-    ]
-  ][
-    #show-block[
-      #{
-        let (a, b) = (1, 2)
-        (a, b) = (b, a)
-        [a是#a，b是#b。]
-      }
-    ]
-  ]
+  #code-and-show(columns: (3fr, 2fr))[```typ
+    #{
+      let (a, b) = (1, 2)
+      (a, b) = (b, a)
+      [a是#a，b是#b。]
+    }
+    ```]
 
 / 条件语句: 条件语句用于在符合某些条件下执行某些表达式，
   Typst 支持 `if`、`else if` 和 `else` 三种条件语句，其中 `if` 是必须的。
@@ -496,81 +375,48 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
   / for循环: for循环用于迭代集合元素，包括列表和字典，并且支持解构操作，例如：
 
-    #grid(columns: (3fr, 2fr), align: center + horizon)[
-      #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-        ```typ
-        #{
-           let list = (1, 2, 3)
-           for e in list [
-             #e;在列表中。\
-           ]
-           let dict = (a: 1, b: 2)
-           for (k, v) in dict [
-             #k;是#v。\
-           ]
-         }
-        ```
-      ]
-    ][
-      #show-block[
-        #{
-          let list = (1, 2, 3)
-          for e in list [
-            #e;在列表中。\
-          ]
-          let dict = (a: 1, b: 2)
-          for (k, v) in dict [
-            #k;是#v。\
-          ]
-        }
-      ]
-    ]
+    #code-and-show(columns: (3fr, 2fr))[```typ
+      #{
+        let list = (1, 2, 3)
+        for e in list [
+          #e;在列表中。\
+        ]
+        let dict = (a: 1, b: 2)
+        for (k, v) in dict [
+          #k;是#v。\
+        ]
+      }
+      ```]
 
   / while循环: 用于在条件满足的情况下一直重复执行表达式，例如：
 
-    #grid(columns: (3fr, 2fr), align: center + horizon)[
-      #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
-        ```typ
-        #{
-          let a = 1
-          let sum = 0
-          while a < 5 {
-            sum = sum + a
-            a = a + 1
-          }
-          [sum等于#sum。]
+    #code-and-show(columns: (3fr, 2fr))[```typ
+      #{
+        let a = 1
+        let sum = 0
+        while a < 5 {
+          sum = sum + a
+          a = a + 1
         }
-        ```
-      ]
-    ][
-      #show-block[
-        #{
-          let a = 1
-          let sum = 0
-          while a < 5 {
-            sum = sum + a
-            a = a + 1
-          }
-          [sum等于#sum。]
-        }
-      ]
-    ]
+        [sum等于#sum。]
+      }
+      ```]
 
 == Typst 包
 
 Typst 自从 #text(font: "Zhuque Fangsong (technical preview)")[v0.6.0] 内置了包管理器后，
-我们就可以很轻松的使用 Typst Universe 中的包来使用别人已经帮我们实现好的功能。
+我们就能轻松地引入 Typst Universe 中的包来使用别人已经帮我们实现好的功能。
 调用包的方式为：
 
 #code-card[```typ #import "@preview/[包名]:[版本]": ..函数名```]
 
-其中，包名指的是要使用的包的名称，版本则是所使用的具体版本。
-而函数名是指一系列用逗号分隔的函数名称，这些函数均来自于要使用的包。
+其中，包名指的是要引入的包的名称，版本则是所使用的具体版本。
+而函数名是指一系列用逗号分隔的函数名称，这些函数都来自于要引入的包。
 例如：
 
 #code-card[```typ #import "@preview/example:0.1.0": add```]
 
-在使用包的时候，如果之前没有使用过这个包，或者没有使用这个版本，
+在引入包的时候，如果之前没有引入过这个包，或者没有使用这个版本，
 Typst 都会先在本地目录缓存（cache）这个包的对应版本，然后再进行使用。
 
 Typst 在缓存的包的具体路径为：`[缓存目录]/typst/packages/preview/[包名]/[版本]`，
@@ -610,7 +456,7 @@ Typst 在缓存的包的具体路径为：`[缓存目录]/typst/packages/preview
 == 文件的组织方式
 
 当编写长篇文档时，例如当编写书籍、毕业论文时，
-单个源文件会使修改、校对变得十分困难。
+单个源文件会让修改、校对变得十分困难。
 将源文件分割成若干个文件，例如将每章内容单独写在一个文件中，
 会大大简化修改和校对的工作。
 
@@ -635,7 +481,7 @@ Typst 提供了函数 ```typc include``` 用来在源代码里插入文件：
 但 Typst 并没有提供等价的功能。
 
 如果你希望从其他文件中直接引入一些内容，可以使用 ```typc import```。
-```typc import``` 除了可以使用包，还可以使用具体文件中的内容，例如：
+```typc import``` 除了可以引入包，还可以引入具体文件中的内容，例如：
 
 #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
   ```typ
