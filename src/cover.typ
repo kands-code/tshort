@@ -6,7 +6,7 @@
   ]
   #line(length: 100%, stroke: 0.5em)
   #align(right)[
-    #text(font: "Zhuque Fangsong (technical preview)", size: 1.6em)[
+    #text(size: 1.6em, font: "Zhuque Fangsong (technical preview)")[
       或 #text(fill: red)[111] 分钟了解 Typst
     ]
   ]

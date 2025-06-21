@@ -1,11 +1,7 @@
 // 生成摘要
 #let abstract(body) = {
   // 使用小一点的无衬线字体，半粗体
-  text(
-    font: "Sarasa Gothic SC",
-    size: 0.96em,
-    weight: "semibold",
-  )[
+  text(size: 0.96em, weight: "semibold", font: "Sarasa Gothic SC")[
     // 内容居中
     #align(center)[
       // 内容宽度限定在 64%
@@ -27,8 +23,8 @@
   (
     // 使用标准等宽字体
     text(
-      font: "Sarasa Fixed Slab SC",
       size: 11pt,
+      font: "Sarasa Fixed Slab SC",
       math.space.thin // 与周围文字添加一点间隔
         + box(
           // 使用 block 包裹
@@ -44,21 +40,21 @@
 }
 // 展示代码片段
 #let code-card(body, background: rgb(238, 238, 238)) = {
-  // 使用本文档标准等宽字体
-  text(font: "Sarasa Fixed Slab SC", size: 11pt)[
-    // 取消段落缩进和调整
-    #set par(first-line-indent: 0em, justify: false)
-    // 手动缩进 2em
-    #h(2em)#box(
-      fill: background,
-      // 圆角大小设置为 0.48em
-      radius: 0.48em,
-      // 设置上下边距为 0.64em，左右边距 2em
-      inset: (y: 0.64em, x: 2em),
-    )[
-      #body
-    ]
-  ]
+  // 取消段落缩进和调整
+  set par(first-line-indent: 0em, justify: false)
+  // 手动缩进 2em
+  (
+    h(2em)
+      + box(
+        fill: background,
+        // 圆角大小设置为 0.48em
+        radius: 0.48em,
+        // 上下边距为 0.64em，左右边距 2em
+        inset: (y: 0.64em, x: 2em),
+      )[
+        #body
+      ]
+  )
 }
 // 展示代码块
 #let code-block(
@@ -124,4 +120,25 @@
   }
   // 显示内容
   body
+}
+// 显示渲染示例
+#let show-block(
+  body,
+  background: rgb(255, 253, 246), // 背景颜色
+  stroke: 0.08em, // 边框厚度
+  radius: 0.8em, // 圆角大小
+) = {
+  // 居中显示
+  align(
+    center,
+    block(
+      fill: background,
+      stroke: stroke,
+      // 设置合理内边距
+      inset: 0.8em,
+      radius: radius,
+    )[
+      #body
+    ],
+  )
 }

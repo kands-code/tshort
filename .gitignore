@@ -1,2 +1,4 @@
 # ignore all pdf files
 **/*.pdf
+# ignore fonts
+fonts/

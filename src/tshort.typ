@@ -1,10 +1,18 @@
 // 设置文档主要字体为 Source Han Serif，
 // 以及文档语言为中文，默认字体大小为 12pt
+// 默认为所有字体设置 Noto Color Emoji 作为 emoji fallback
 #set text(
-  font: "Source Han Serif",
   size: 12pt,
   lang: "zh",
+  fill: black,
+  font: ("Source Han Serif SC", "Noto Color Emoji"),
 )
+// 设置数学字体为 STIX Two Math，字体大小为 12pt
+#show math.equation: set text(size: 12pt, font: "STIX Two Math")
+// 设置等宽字体为 Sarasa Fixed Slab SC，字体大小为 11pt
+#show raw: set text(size: 11pt, font: "Sarasa Fixed Slab SC")
+// 对于普通行内等宽内容，字体颜色设置为 rgb(135, 35, 65)，与普通内容区分
+#show raw.where(block: false, lang: none): set text(fill: rgb(135, 35, 65))
 // 设置页面大小为 a4
 #set page(paper: "a4")
 // 启用段落自动调整功能
@@ -13,8 +21,14 @@
 #set cite(style: "gb-7714-2015-numeric", form: "normal")
 // 设置 figure 的编号方式
 #set figure(numbering: it => [ #counter(heading).get().first().#it ])
-// 设置 footnote 字体大小为 0.8em
-#show footnote.entry: set text(size: 0.8em)
+// footnote 设置
+#show footnote.entry: it => {
+  // 设置 footnote 字体大小为 12pt * 0.8
+  set text(size: 9.6pt, fill: black)
+  // 并且调整对应等宽字体大小 11pt * 0.8
+  show raw: set text(size: 8.8pt)
+  it
+}
 // 设置 figure 的上下外间距
 #show figure: set block(above: 1.6em, below: 1.6em)
 // 设置 figure 标题的上下边距
@@ -26,10 +40,6 @@
 // 设置链接和引用的的文本颜色
 #show link: set text(fill: rgb(87, 123, 193))
 #show ref: set text(fill: rgb(52, 76, 183))
-// 设置数学字体为 STIX Two Math，字体大小为 12pt
-#show math.equation: set text(font: "STIX Two Math", size: 12pt)
-// 设置等宽字体为 Sarasa Fixed Slab SC，字体大小为 11pt
-#show raw: set text(font: "Sarasa Fixed Slab SC", size: 11pt)
 // 设置标题格式
 #show heading: it => if it.level == 1 {
   // 重置脚注计数器，从 0 开始
@@ -69,13 +79,20 @@
       ]
     ]
   ]
-} else {
-  // 对于二级以下的标题，如三级标题
-  // 设置标题字体大小为 1.2em
+} else if it.level == 3 {
+  // 对于三级标题，设置标题字体大小为 1.2em
   text(size: 1.2em)[
     // 设置上外边距为 1.6em，下外边距为 1.2em
     #block(above: 1.6em, below: 1.2em)[
       //! 二级以下的标题一定有编号，所以按照有编号的格式显示
+      #counter(heading).display(it.numbering)#h(1em)#it.body
+    ]
+  ]
+} else {
+  // 对于三级及以下标题，设置标题字体大小为 1.08em
+  text(size: 1.08em)[
+    #block(above: 1.6em, below: 1.2em)[
+      //! 按照有编号的格式显示
       #counter(heading).display(it.numbering)#h(1em)#it.body
     ]
   ]
@@ -318,6 +335,8 @@
 #counter(page).update(1)
 // 第一章内容
 #include "chp/ch01.typ"
+// 第二章内容
+#include "chp/ch02.typ"
 
 // ---------
 //  附录部分

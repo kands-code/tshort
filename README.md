@@ -12,7 +12,8 @@ or consult the source file `license.typ`.
 
 ## 生成文档前的准备
 
-安装最新版本的 Typst 工具，或者更新 Typst 到最新版本。
+- 安装最新版本的 Typst 工具，或者更新 Typst 到最新版本。
+- 准备好文档所使用的字体，可以参考 [字体](#字体)。
 
 ## 生成方式
 
@@ -29,7 +30,10 @@ or consult the source file `license.typ`.
 也可以直接使用 `typst` 进行编译：
 
 ```bash
-typst compile "src/tshort.typ" --font-path "./fonts" "tshort.pdf"
+typst compile "src/tshort.typ" \
+    --font-path "fonts/" \
+    --ignore-system-fonts \
+    "tshort.pdf"
 ```
 
 生成后的文档可以在项目根目录下找到。
@@ -38,8 +42,8 @@ typst compile "src/tshort.typ" --font-path "./fonts" "tshort.pdf"
 
 下面是本文档所使用的字体列表：
 
-- 衬线字体：Source Han Serif CN
+- 衬线字体：Source Han Serif SC
 - 无衬线字体：Sarasa Gothic SC
 - 等宽字体：Sarasa Fixed Slab SC
 - 数学字体：STIX Two Math
-- 其他字体：Zhuque Fangsong
+- 其他字体：Zhuque Fangsong，Noto Color Emoji
