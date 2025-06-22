@@ -73,7 +73,7 @@
     // 设置标题字体大小为 1.28em
     #text(size: 1.28em)[
       // 设置上外边距为 3.2em，下外边距为 1.6em
-      #block(above: 3.2em, below: 1.6em)[
+      #block(above: 2.4em, below: 1.6em)[
         #if it.numbering == none [
           // 对于没有编号的标题，只显示标题内容
           #it.body
@@ -109,6 +109,8 @@
 
 // 引入文档封面
 #include "cover.typ"
+#pagebreak(to: "odd", weak: true)
+
 // 设置文档信息
 #set document(
   title: [一份（不太）简短的 Typst 介绍], // 文档标题
@@ -187,8 +189,13 @@
 )
 // 引入前言
 #include "prelude.typ"
+#pagebreak(to: "odd", weak: true)
+
+// ---------
+//  目录部分
+// ---------
+
 // 设置目录的页眉显示
-#pagebreak()
 #set page(
   header: context {
     // 获取所有一级标题的位置
@@ -218,14 +225,20 @@
   },
 )
 
-// ---------
-//  目录部分
-// ---------
-
-// 主目录使用一级标题
+// 目录手动使用一级标题
 = 目录
-// 设置为双栏目录，不显示标题
+
+// 一级标题与页码间使用空白填充
+#show outline.entry.where(level: 1): set outline.entry(fill: [])
+// 一级标题显示为粗体
+#show outline.entry.where(level: 1): it => {
+  text(weight: "bold", it)
+}
+// 设置为双栏目录，不显示目录标题
 #columns(2)[
+  // 字体大小设置为 11pt，方便显示标题
+  #set text(size: 11pt)
+  // 目录内容
   #outline(
     title: none,
     depth: 3, // 最多显示三层目录
@@ -248,13 +261,13 @@
   // 列出所有的种类为 raw 的 figure 来生成目录
   target: figure.where(kind: raw),
 )
+#pagebreak(to: "odd", weak: true)
 
 // ---------
 //  正文部分
 // ---------
 
 // 设置正文格式
-#pagebreak()
 // 正文一级标题编号使用 <第x章> 的格式
 #show heading.where(level: 1): set heading(numbering: "第一章")
 // 最多三级标题，第二和第三级标题使用 <x.x.x> 的格式
@@ -339,15 +352,16 @@
 #counter(page).update(1)
 // 第一章内容
 #include "chp/ch01.typ"
+#pagebreak(to: "odd", weak: true)
 // 第二章内容
 #include "chp/ch02.typ"
+#pagebreak(to: "odd", weak: true)
 
 // ---------
 //  附录部分
 // ---------
 
 // 设置附录
-#pagebreak()
 // 附录一级标题显示为 <附录x>
 #show heading.where(level: 1): set heading(numbering: "附录A")
 // 其他标题显示为 <x.x.x>
@@ -356,6 +370,7 @@
 #counter(heading).update(0)
 // 引入附录内容
 #include "appendix.typ"
+#pagebreak(to: "odd", weak: true)
 
 // 正文结束后取消标题编号
 #show heading: set heading(numbering: none)
@@ -364,16 +379,45 @@
 //  参考文献部分
 // -------------
 
-// 设置参考文献
-#pagebreak()
+// 设置参考文献页眉
+#set page(
+  header: context {
+    // 获取所有一级标题的位置
+    let positions = query(heading.where(level: 1)).map(it => it.location().page())
+    // 获取当前页面的实际页码
+    let current_page = here().page()
+    // 检查当前页面是否是章节首页
+    if current_page in positions {
+      // 如果是则不显示页眉
+      []
+    } else {
+      // 否则显示页眉
+      align(center + bottom)[
+        #text(weight: "bold")[
+          #if calc.even(current_page) [
+            // 格式为偶数 <页码 间隔 标题>
+            #counter(page).display()#h(1fr)参考文献
+          ] else [
+            // 奇数页眉为 <间隔 页码>
+            #h(1fr)#counter(page).display()
+          ]
+        ]
+        #v(-0.48em)
+        #line(length: 100%, stroke: 0.64pt + black)
+      ]
+    }
+  },
+)
+
 // 参考文献使用 gb-7714-2015-numeric 格式
 // 参考内容引用自 refs.bib 文件
 #bibliography(style: "gb-7714-2015-numeric", "refs.bib")
+#pagebreak(to: "odd", weak: true)
 
 // -----------
 //  许可证部分
 // -----------
 
-#pagebreak()
 // 引用许可证
 #include "license.typ"
+#pagebreak(to: "odd", weak: true)

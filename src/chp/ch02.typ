@@ -35,7 +35,11 @@ UTF-8 作为 Unicode 最为广泛采用的实现方式，
 这些细节对于生成高质量的文档至关重要。
 
 Typst 允许通过 `text` 函数的 `lang` 参数为特定文本片段指定语言。
-若需统一设置整个文档的语言，Typst 提供了 `set` 规则。
+Typst 采用符合 #link("https://en.wikipedia.org/wiki/ISO_639")[
+  ISO 639-1/2/3 标准
+]的二或三字符语言代码来标识不同的语言。
+若需统一设置整个文档的语言，可以使用 `set` 来设置规则。
+
 例如，将文档语言设定为西班牙语，可使用：
 
 #code-and-show[```typ
@@ -43,10 +47,7 @@ Typst 允许通过 `text` 函数的 `lang` 参数为特定文本片段指定语�
   "La familia lo es todo."
   ```]
 
-其中，`"es"` 代表西班牙语。
-Typst 采用符合 #link("https://en.wikipedia.org/wiki/ISO_639")[
-  ISO 639-1/2/3 标准
-]的二或三字符语言代码来标识不同的语言，中文一般使用 `"zh"`。
+其中，`"es"` 代表西班牙语，中文一般使用 `"zh"`。
 
 == 排版中文
 
@@ -71,7 +72,7 @@ Typst 将按列表顺序尝试使用，可用于处理字体回退或显示特�
 正则表达式中可以使用 `\p` 匹配 Unicode 属性@unicode-techreport-23。
 
 例如要让所有 Emoji 都使用 Noto Color Emoji 字体，
-CJK 内容中的英文使用 New Computer Modern Sans 字体，
+CJK 内容中的西文使用 New Computer Modern Sans 字体，
 默认字体使用 Source Han Serif SC：
 
 #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
@@ -89,7 +90,7 @@ CJK 内容中的英文使用 New Computer Modern Sans 字体，
 
   汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
   当然，为了代码的可读性，加上汉字和 English 之间的空格也无妨。
-  换行会引入一个英文空格，可能会影响排版。
+  换行会引入一个西文空格，可能会影响排版。
   ```
 ]
 
@@ -110,19 +111,19 @@ CJK 内容中的英文使用 New Computer Modern Sans 字体，
 
   汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
   当然，为了代码的可读性，加上汉字和 English 之间的空格也无妨。
-  换行会引入一个英文空格，可能会影响排版。
+  换行会引入一个西文空格，可能会影响排版。
 ]
 
 
 
-为了更加符合中文排版习惯，还可以调整 `par` 函数的参数来修改段落的排版，
-例如调整首行缩进 `first-line-indent` 以及排版调整 `justify`：
+为了更加符合中文排版习惯，还可以设置 `par` 函数的参数来修改段落的排版，
+例如调整首行缩进 `first-line-indent` 以及两端对齐 `justify`：
 
 #code-card[
   ```typ
   #set par(
     first-line-indent: (amount: 2em, all: true),
-    justify: true, // 启用排版调整，即两端对齐
+    justify: true, // 使用两端对齐
     leading: 0.8em, // 段落内行间距，默认是 0.65em
   )
   ```
@@ -195,21 +196,28 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
 ==== 引号
 
 在 Typst 中，西文的双引号和单引号可直接通过 `'` 和 `"` 输入。
-但是，英文引号和中文引号实际上是同一组符号，所以在非西文环境下，
+但是，西文引号和中文引号实际上是同一组符号，所以在非西文环境下，
 引号可能会由不正确的字体渲染而导致宽度偏差，例如：
 
-#code-and-show(columns: (3fr, 2fr))[```typ
+#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+  ```typ
   // 默认是中文
-  "It's MyGO!"
-
+  "It's MyGO!" \
   // 英文渲染
-  #text(
-    lang: "en",
-    font: "New Computer Modern",
-  )[
+  #text(lang: "en", font: "New Computer Modern")[
     "It's MyGO!"
   ]
-  ```]
+  ```
+]
+
+#show-block[
+  // 默认是中文
+  "It's MyGO!" \
+  // 英文渲染
+  #text(lang: "en", font: "New Computer Modern")[
+    "It's MyGO!"
+  ]
+]
 
 可以看到，引号的渲染结果差异显著。
 
@@ -248,11 +256,6 @@ Typst 可以直接输入三个点表示省略号，等价于 ```typ #sym.dots```
   one, two, three, #sym.dots one hundred.
 ]
 
-==== 波浪号
-
-正如在 @特殊字符 中展示的，西文波浪号可以使用 `\~` 输入，如果是 `~` 会得到一个西文空格。
-在中文环境中一般直接使用全角波浪号 `～`。
-
 === 拉丁文扩展与重音
 
 Typst *不支持*用符号输入西欧语言中各种拉丁文扩展字符，
@@ -261,18 +264,16 @@ Typst *不支持*用符号输入西欧语言中各种拉丁文扩展字符，
 要输入这些字符，只能直接输入这些符号，部分组合字符通过这些函数得到：
 
 #code-and-show(columns: (5fr, 3fr))[```typ
-  #let grave(x) = x + "\u{300}"
-  #let acute(x) = x + "\u{301}"
-  #let circumflex(x) = x + "\u{302}"
-  #let tilde(x) = x + "\u{303}"
-  #let macron(x) = x + "\u{304}"
-  #let dot(x) = x + "\u{307}"
-  #let diaer(x) = x + "\u{308}"
-  #let ring(x) = x + "\u{30A}"
-
-  ï 等于 #diaer[i]，\
-  Ô 等于 #circumflex[O]，\
-  ø 这种 stroke 无法得到。
+    #let grave(x) = x + "\u{300}"
+    #let acute(x) = x + "\u{301}"
+    #let cir(x) = x + "\u{302}"
+    #let tilde(x) = x + "\u{303}"
+    #let macron(x) = x + "\u{304}"
+    #let dot(x) = x + "\u{307}"
+    #let diaer(x) = x + "\u{308}"
+    ï 等于 #diaer[i]，\
+    Ô 等于 #cir[O]，\
+    ø 这种 stroke 无法得到。
   ```]
 
 === 其他符号
@@ -293,5 +294,33 @@ Typst 支持的所有符号可以参考文档 sym@typst-symbols。
 
 == 断行和断页
 
-TODO
+在绝大多数时候，我们无需自己操心断行和断页，但有时也会需要手工调整。
 
+=== 单词间距
+
+在西文排版实践中，断行的位置优先选取在两个单词之间，也就是在源代码中输入的“空格”。
+“空格”本身通常生成一个间距，它会根据行宽和上下文自动调整。
+
+文字在单词间的“空格”处断行时，“空格”生成的间距随之舍去。
+我们可以使用字符 `~` 输入一个不会断行的空格，
+通常用在英文人名、图表名称等上下文环境：
+
+#code-and-show(code-func: code-card)[```typ
+  Fig.~2a \
+  Donald~E.~Knuth
+  ```]
+
+=== 手动断行和断页
+
+如果我们确实需要手动断行，可使用 ```typ #linebreak()``` 或 ```typ \```。
+其中 `linebreak` 函数可以通过参数 `justify` 来设置断行处是否使用两端对齐。
+
+#code-and-show(code-func: code-card, columns: (1fr, 1fr))[```typ
+  使用 `\` 断行的效果 \
+  与使用 `justify: true` \
+  断行的效果
+  #linebreak(justify: true)
+  进行对比
+  ```]
+
+断页可以使用 ```typ #pagebreak()```。

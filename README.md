@@ -46,7 +46,7 @@ typst compile "src/tshort.typ" \
 - 无衬线字体：Sarasa Gothic SC
 - 等宽字体：Sarasa Fixed Slab SC
 - 数学字体：New Computer Modern Math
-- 英文字体：New Computer Modern
+- 西文字体：New Computer Modern
 - 其他字体：Zhuque Fangsong，Noto Color Emoji
 
 对应仓库：

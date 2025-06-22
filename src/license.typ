@@ -1,8 +1,6 @@
 // 设置许可证文字，
 // 设置语言为英语，字体大小为 9pt，字体为 New Computer Modern
 #set text(lang: "en", font: "New Computer Modern", size: 9pt)
-// 设置行间距为 1em
-#set par(leading: 1em)
 // 设置等宽字体大小为 9pt
 #show raw: set text(size: 9pt)
 // 设置标题显示
@@ -17,7 +15,7 @@
     ]
   ]
 } else {
-  // 其他标题使用英文无衬线字体，顶格，只显示标题内容
+  // 其他标题使用西文无衬线字体，顶格，只显示标题内容
   block(above: 1.6em, below: 1.6em)[
     #text(size: 1.2em, font: "New Computer Modern Sans")[
       #it.body
