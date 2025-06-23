@@ -110,10 +110,7 @@
           )
         } else {
           // 如果不显示行号，则左对齐显示所有内容
-          align(
-            left,
-            it.lines.map(l => l.body + linebreak()).join(),
-          )
+          align(left, it.lines.map(l => l.body + linebreak()).join())
         }
       ]
     ]
@@ -129,21 +126,18 @@
   radius: 0.8em, // 圆角大小
 ) = {
   // 居中显示
-  align(
-    center,
-    block(
-      fill: background,
-      stroke: stroke,
-      // 设置合理内边距
-      inset: 1em,
-      radius: radius,
-    )[
-      // 恢复默认排版
-      #set align(left)
-      #set par(first-line-indent: 0em, justify: false)
-      #body
-    ],
-  )
+  align(center, block(
+    fill: background,
+    stroke: stroke,
+    // 设置合理内边距
+    inset: 1em,
+    radius: radius,
+  )[
+    // 恢复默认排版
+    #set align(left)
+    #set par(first-line-indent: 0em, justify: false)
+    #body
+  ])
 }
 
 #let code-and-show(

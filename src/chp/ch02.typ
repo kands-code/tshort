@@ -1,4 +1,4 @@
-#import "../utils.typ": kbd, abstract, code-block, code-card, show-block, code-and-show
+#import "../utils.typ": abstract, code-and-show, code-block, code-card, kbd, show-block
 
 = 用 Typst 排版文字
 
@@ -67,7 +67,7 @@ Typst 将按列表顺序尝试使用，可用于处理字体回退或显示特�
 其中字典元素有 `name` 和 `covers` 键，
 表示对应的字体名称和覆盖的范围。
 `covers` 的值应该是 `"latin-in-cjk"`#footnote[
-  匹配 CJK 内容中的拉丁内容，包括数字
+  匹配 CJK 内容中的拉丁内容，包括数字。
 ] 或者正则表达式，
 正则表达式中可以使用 `\p` 匹配 Unicode 属性@unicode-techreport-23。
 
@@ -98,15 +98,11 @@ CJK 内容中的西文使用 New Computer Modern Sans 字体，
   // 恢复默认排版
   #set align(left)
   #set par(first-line-indent: 0em, justify: false)
-  #set text(
-    lang: "zh",
-    size: 12pt,
-    font: (
-      (name: "New Computer Modern Sans", covers: "latin-in-cjk"),
-      (name: "Noto Color Emoji", covers: regex("\p{Emoji}")),
-      "Source Han Serif SC",
-    ),
-  )
+  #set text(lang: "zh", size: 12pt, font: (
+    (name: "New Computer Modern Sans", covers: "latin-in-cjk"),
+    (name: "Noto Color Emoji", covers: regex("\p{Emoji}")),
+    "Source Han Serif SC",
+  ))
   Typst ♥️ 中文 2025。
 
   汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
@@ -162,7 +158,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
   A `parbreak` command does the same.
 ]
 
-=== 特殊字符<特殊字符>
+=== 特殊字符
 
 有些字符在 Typst 里有特殊用途，例如 `#` 和 `$` 分别表示命令模式和数学模式。
 输入这些字符得不到对应的符号，还往往会出错。
@@ -189,7 +185,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
 === 标点符号
 
 中文的标点符号#footnote[
-  绝大多数为非 ASCII 字符
+  绝大多数为非 ASCII 字符。
 ]使用中文输入法输入即可，一般不需要过多留意。
 输入西文标点符号时，则有不少地方需要留意。
 
@@ -225,7 +221,9 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
 
 Typst 中有三种长度的“横线”可用：连字号（hyphen）、短破折号（en-dash）和长破折号（em-dash）。
 它们分别有不同的用途：连字号 - 用来组成复合词；短破折号 -- 用来连接数字表示范围；
-长破折号 --- 用来连接单词，语义上类似中文的破折号。
+长破折号 --- 用来连接单词，语义上类似中文的破折号#footnote[
+  中文的破折号一般使用 `------` 表示。
+]。
 
 #code-and-show(code-func: code-card, columns: (3fr, 2fr))[```typ
   #set text(
@@ -261,18 +259,14 @@ Typst 可以直接输入三个点表示省略号，等价于 ```typ #sym.dots```
 Typst *不支持*用符号输入西欧语言中各种拉丁文扩展字符，
 详情请查看#link("https://github.com/typst/typst/issues/833")[issue]。
 
-要输入这些字符，只能直接输入这些符号，部分组合字符通过这些函数得到：
+要输入这些字符，只能直接输入这些符号，
+部分组合字符可以通过字符与修饰字符拼接的方式得到，例如：
 
 #code-and-show(columns: (5fr, 3fr))[```typ
-    #let grave(x) = x + "\u{300}"
-    #let acute(x) = x + "\u{301}"
-    #let cir(x) = x + "\u{302}"
-    #let tilde(x) = x + "\u{303}"
-    #let macron(x) = x + "\u{304}"
-    #let dot(x) = x + "\u{307}"
-    #let diaer(x) = x + "\u{308}"
-    ï 等于 #diaer[i]，\
-    Ô 等于 #cir[O]，\
+    è 等于 #{ [e] + "\u{300}" }， \
+    á 等于 #{ [a] + "\u{301}" }， \
+    ï 等于 #{ [i] + "\u{308}" }，\
+    Ô 等于 #{ [O] + "\u{302}" }，\
     ø 这种 stroke 无法得到。
   ```]
 
@@ -323,4 +317,31 @@ Typst 支持的所有符号可以参考文档 sym@typst-symbols。
   进行对比
   ```]
 
-断页可以使用 ```typ #pagebreak()```。
+手动断页可以使用 `pagebreak` 函数。
+
+`pagebreak` 函数支持以下参数，以提供更精细的断页控制：
+
+/ weak: 接受一个布尔值。
+
+  设置为 `true` 时，如果当前页面为空白页，则不会发生断页。
+
+/ to: 可选值为 ```typc none```、`"even"` 或 `"odd"`。
+
+  - 设置为 `"even"`，可确保后续内容从*实际的*偶数页开始，必要时会插入空白页。
+  - 设置为 `"odd"`，可确保后续内容从实际的奇数页开始。
+
+在书籍排版中，通常要求每个章节从奇数页开始，此时可以使用如下函数分隔章节：
+
+#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+  ```typ
+  #let insert-page(to: "odd") = {
+    // 强制断页
+    pagebreak(weak: false)
+    // 确保页面完全空白
+    set page(header: [], footer: [])
+    // 让后续内容在 `to` 页面上
+    // 默认是 奇数页面
+    pagebreak(to: to, weak: true)
+  }
+  ```
+]

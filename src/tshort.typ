@@ -103,13 +103,28 @@
   ]
 }
 
+// ----------
+//   部分工具
+// ----------
+
+// 插入空白页
+#let insert-page(to: "odd") = {
+  // 强制断页
+  pagebreak(weak: false)
+  // 确保页面完全空白
+  set page(header: [], footer: [])
+  // 让后续内容在 `to` 页面上
+  // 默认是 奇数页面
+  pagebreak(to: to, weak: true)
+}
+
 // ---------
 //  封面部分
 // ---------
 
 // 引入文档封面
 #include "cover.typ"
-#pagebreak(to: "odd", weak: true)
+#insert-page()
 
 // 设置文档信息
 #set document(
@@ -189,41 +204,39 @@
 )
 // 引入前言
 #include "prelude.typ"
-#pagebreak(to: "odd", weak: true)
+#insert-page()
 
 // ---------
 //  目录部分
 // ---------
 
 // 设置目录的页眉显示
-#set page(
-  header: context {
-    // 获取所有一级标题的位置
-    let positions = query(heading.where(level: 1)).map(it => it.location().page())
-    // 获取当前页面的实际页码
-    let current_page = here().page()
-    // 检查当前页面是否是章节首页
-    if current_page in positions {
-      // 如果是则不显示页眉
-      []
-    } else {
-      // 否则显示页眉
-      align(center + bottom)[
-        #text(weight: "bold")[
-          #if calc.even(current_page) [
-            // 格式为偶数 <页码 间隔 标题>
-            #counter(page).display()#h(1fr)目录
-          ] else [
-            // 奇数页眉为 <标题 间隔 页码>
-            目录#h(1fr)#counter(page).display()
-          ]
+#set page(header: context {
+  // 获取所有一级标题的位置
+  let positions = query(heading.where(level: 1)).map(it => it.location().page())
+  // 获取当前页面的实际页码
+  let current_page = here().page()
+  // 检查当前页面是否是章节首页
+  if current_page in positions {
+    // 如果是则不显示页眉
+    []
+  } else {
+    // 否则显示页眉
+    align(center + bottom)[
+      #text(weight: "bold")[
+        #if calc.even(current_page) [
+          // 格式为偶数 <页码 间隔 标题>
+          #counter(page).display()#h(1fr)目录
+        ] else [
+          // 奇数页眉为 <标题 间隔 页码>
+          目录#h(1fr)#counter(page).display()
         ]
-        #v(-0.48em)
-        #line(length: 100%, stroke: 0.64pt + black)
       ]
-    }
-  },
-)
+      #v(-0.48em)
+      #line(length: 100%, stroke: 0.64pt + black)
+    ]
+  }
+})
 
 // 目录手动使用一级标题
 = 目录
@@ -261,7 +274,7 @@
   // 列出所有的种类为 raw 的 figure 来生成目录
   target: figure.where(kind: raw),
 )
-#pagebreak(to: "odd", weak: true)
+#insert-page()
 
 // ---------
 //  正文部分
@@ -305,10 +318,9 @@
               counter(page).display()
                 + h(1fr)
                 + [
-                  #numbering(
-                    "第一章",
-                    level1_headings_title.first(),
-                  )#h(1em)#level1_headings_title.at(1)
+                  #numbering("第一章", level1_headings_title.first())#h(
+                    1em,
+                  )#level1_headings_title.at(1)
                 ]
             )
           } else {
@@ -352,10 +364,13 @@
 #counter(page).update(1)
 // 第一章内容
 #include "chp/ch01.typ"
-#pagebreak(to: "odd", weak: true)
+#insert-page()
 // 第二章内容
 #include "chp/ch02.typ"
-#pagebreak(to: "odd", weak: true)
+#insert-page()
+// 第三章内容
+#include "chp/ch03.typ"
+#insert-page()
 
 // ---------
 //  附录部分
@@ -380,34 +395,32 @@
 // -------------
 
 // 设置参考文献页眉
-#set page(
-  header: context {
-    // 获取所有一级标题的位置
-    let positions = query(heading.where(level: 1)).map(it => it.location().page())
-    // 获取当前页面的实际页码
-    let current_page = here().page()
-    // 检查当前页面是否是章节首页
-    if current_page in positions {
-      // 如果是则不显示页眉
-      []
-    } else {
-      // 否则显示页眉
-      align(center + bottom)[
-        #text(weight: "bold")[
-          #if calc.even(current_page) [
-            // 格式为偶数 <页码 间隔 标题>
-            #counter(page).display()#h(1fr)参考文献
-          ] else [
-            // 奇数页眉为 <间隔 页码>
-            #h(1fr)#counter(page).display()
-          ]
+#set page(header: context {
+  // 获取所有一级标题的位置
+  let positions = query(heading.where(level: 1)).map(it => it.location().page())
+  // 获取当前页面的实际页码
+  let current_page = here().page()
+  // 检查当前页面是否是章节首页
+  if current_page in positions {
+    // 如果是则不显示页眉
+    []
+  } else {
+    // 否则显示页眉
+    align(center + bottom)[
+      #text(weight: "bold")[
+        #if calc.even(current_page) [
+          // 格式为偶数 <页码 间隔 标题>
+          #counter(page).display()#h(1fr)参考文献
+        ] else [
+          // 奇数页眉为 <间隔 页码>
+          #h(1fr)#counter(page).display()
         ]
-        #v(-0.48em)
-        #line(length: 100%, stroke: 0.64pt + black)
       ]
-    }
-  },
-)
+      #v(-0.48em)
+      #line(length: 100%, stroke: 0.64pt + black)
+    ]
+  }
+})
 
 // 参考文献使用 gb-7714-2015-numeric 格式
 // 参考内容引用自 refs.bib 文件
