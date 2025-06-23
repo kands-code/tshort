@@ -1,4 +1,4 @@
-#import "../utils.typ": abstract, kbd, code-card, code-block, show-block, code-and-show
+#import "../utils.typ": abstract, code-and-show, code-block, code-card, kbd, show-block
 
 = Typst 的基本概念
 
@@ -115,9 +115,7 @@ Linux 或 macOS 等 \*nix#footnote[
 你可以将这份源代码保存为 `hello.typ`，然后编译。
 具体来说:
 
-/ 本地编辑器: 如果使用 Visual Studio Code 配合 #link(
-    "https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist",
-  )[Tinymist 插件]，你可以使用编辑器提供的“显示导出的 PDF”按钮生成 PDF 文档。
+/ 本地编辑器: 如果使用 Visual Studio Code 配合 #link("https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist")[Tinymist 插件]，你可以使用编辑器提供的“显示导出的 PDF”按钮生成 PDF 文档。
 
 / 在线编辑器: 如果使用 Typst 在线编辑器，
   你可以通过 #kbd[file] #sym.triangle.filled.small.r #kbd[Quick export PDF]，
@@ -290,6 +288,8 @@ Typst 的源代码是以纯文本文件的形式编写的。
     }
     ```]
 
+  定义函数的语法是：```typc let 函数名(参数列表) = 表达式```。
+
   使用 `let` 还可以解构一些结构，例如数组，字典。
   数组就是一系列元素，使用圆括号表示，例如：```typc (1, "2", [三])```；
   字典就是由字符串作为“键”的*键值对*组成的列表，其中这个“键”是唯一的，
@@ -419,7 +419,7 @@ Typst 自从 #text(font: "Zhuque Fangsong (technical preview)")[v0.6.0] 内置�
 在引入包的时候，如果之前没有引入过这个包，或者没有使用这个版本，
 Typst 都会先在本地目录缓存（cache）这个包的对应版本，然后再进行使用。
 
-Typst 在缓存的包的具体路径为：`[缓存目录]/typst/packages/preview/[包名]/[版本]`，
+Typst 在本地缓存的包的具体路径为：`[缓存目录]/typst/packages/preview/[包名]/[版本]`，
 其中 `[缓存目录]` 默认是标准的用户缓存目录：
 
 - 对于 Windows 用户：`C:\User\[用户名]\AppData\Local`。

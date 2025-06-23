@@ -3,6 +3,7 @@
 #set text(
   size: 12pt,
   lang: "zh",
+  region: "cn", // 确保使用中国大陆简体规范
   fill: black,
   // 由于生成文档时默认禁用系统字体，
   // Emoji 字体默认回退为 Noto Color Emoji
@@ -34,6 +35,26 @@
   show raw: set text(size: 8.8pt)
   it
 }
+// 设置有序列表编号
+#set enum(full: true, numbering: (..nums) => {
+  let level = nums.pos().len()
+  let num = nums.at(level - 1)
+  if level == 1 {
+    numbering("一、", num)
+  } else if level == 2 {
+    numbering("（一）", num)
+  } else if level == 3 {
+    numbering("1.", num)
+  } else if level == 4 {
+    numbering("(1)", num)
+  } else if level == 5 {
+    numbering("1)", num)
+  } else if level == 6 {
+    numbering("A.", num)
+  } else {
+    numbering("a.", num)
+  }
+})
 // 设置 figure 的上下外间距
 #show figure: set block(above: 1.6em, below: 1.6em)
 // 设置 figure 标题的上下边距
