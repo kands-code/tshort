@@ -60,10 +60,10 @@
 #let code-block(
   body,
   background: rgb(255, 253, 246), // 代码块背景颜色
-  linenumber: false, // 是否显示行号
+  linenumber: true, // 是否显示行号
   numbercolor: rgb(112, 119, 161), // 行号颜色
-  top-bottom-stroke: false, // 是否显示代码块上下边框
-  stroke-thickness: 0.08em, // 边框厚度
+  top-bottom-stroke: true, // 是否显示代码块上下边框
+  stroke-thickness: 0.04em, // 边框厚度
   stroke-color: black, // 边框颜色
 ) = {
   // 取消段落缩进和调整
@@ -142,11 +142,7 @@
 
 #let code-and-show(
   body,
-  code-func: it => code-block(
-    linenumber: true,
-    top-bottom-stroke: true,
-    stroke-thickness: 0.04em,
-  )[#it],
+  code-func: code-block,
   columns: (1fr, 1fr),
   align: center + horizon,
 ) = {

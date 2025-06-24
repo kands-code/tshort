@@ -17,7 +17,8 @@ Typst 源代码为文本文件，而文本文件的一个至关重要的性质�
 为了使这些数据能被人类理解，我们需依循特定规则将其转换为可读内容，
 此过程被称为*编码*，反之则为*解码*。
 
-需要注意的是，同一串二进制数据若采用不同的编码方式进行解码，其所呈现的内容可能截然不同。
+需要注意的是，同一串二进制数据如果采用不同的编码方式进行解码，
+其所呈现的内容可能截然不同。
 因此，处理文本文件时，明确其编码方式至关重要。
 
 早期曾出现多种字符编码方案，但它们彼此独立且不兼容，常导致*乱码*问题。
@@ -34,13 +35,13 @@ UTF-8 作为 Unicode 最为广泛采用的实现方式，
 这是因为不同语言在排版时，需要考虑断词规则、文字方向、标点禁则等诸多细节，
 这些细节对于生成高质量的文档至关重要。
 
-Typst 允许通过 `text` 函数的 `lang` 参数为特定文本片段指定语言。
+Typst 通过 `text` 函数的 `lang` 参数，可以指定文档或片段使用的语言。
 Typst 采用符合 #link("https://en.wikipedia.org/wiki/ISO_639")[
   ISO 639-1/2/3 标准
 ]的二或三字符语言代码来标识不同的语言。
-若需统一设置整个文档的语言，可以使用 `set` 来设置规则。
+如果需统一设置整个文档的语言，可以使用 `set` 来设置规则。
 
-例如，将文档语言设定为西班牙语，可使用：
+例如，将文档语言设置为西班牙语，可使用：
 
 #code-and-show[```typ
   #set text(lang: "es")
@@ -58,24 +59,24 @@ Typst 在处理中文排版时，一方面是对中文字体的支持，
 中文排版的细节处理，可通过明确文档语言来解决。
 一旦指定了文档语言，Typst 便能自动应用相应的中文排版规则。
 
-对于字体，Typst 默认会智能地选择并使用可用的中文字体。
+Typst 会智能地寻找和使用系统中可用的字体，
 也可以通过 `text` 函数的 `font` 参数指定。
-`font` 的值可以是字体名称，还可以接受列表。
+`font` 的值可以是字体名称，还可以接受列表；
 Typst 将按列表顺序尝试使用，可用于处理字体回退或显示特殊字符。
 
 列表元素可以是字体名称，也可以是一个字典。
 其中字典元素有 `name` 和 `covers` 键，
-表示对应的字体名称和覆盖的范围。
+表示对应的字体名称和覆盖范围。
 `covers` 的值应该是 `"latin-in-cjk"`#footnote[
   匹配 CJK 内容中的拉丁内容，包括数字。
 ] 或者正则表达式，
 正则表达式中可以使用 `\p` 匹配 Unicode 属性@unicode-techreport-23。
 
-例如要让所有 Emoji 都使用 Noto Color Emoji 字体，
-CJK 内容中的西文使用 New Computer Modern Sans 字体，
-默认字体使用 Source Han Serif SC：
+例如要让所有的 Emoji 都使用 Noto Color Emoji 字体，
+CJK 内容中的西文内容使用 New Computer Modern Sans 字体，
+默认使用 Source Han Serif SC 字体：
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   #set text(
     lang: "zh",
@@ -132,11 +133,11 @@ CJK 内容中的西文使用 New Computer Modern Sans 字体，
 Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空格”。
 连续的若干个空白字符视为一个空格。一行开头的空格忽略不计。
 
-行末的换行符视为一个空格；但连续两个换行符，也就是空行，会将文字分段。
+行末的换行符视为一个空格；连续两个换行符，也就是空行，会将文字分段。
 多个空行被视为一个空行。也可以在行末使用 ```typc parbreak``` 函数分段。
 
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   Several spaces     equal one.
     Front spaces are ignored.
@@ -160,7 +161,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
 
 === 特殊字符
 
-有些字符在 Typst 里有特殊用途，例如 `#` 和 `$` 分别表示命令模式和数学模式。
+有些字符在 Typst 中有特殊的用途，例如 `#` 和 `$` 表示命令模式和数学模式。
 输入这些字符得不到对应的符号，还往往会出错。
 
 如果想要输入特殊字符，需要使用反斜线转义，例如：
@@ -195,7 +196,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
 但是，西文引号和中文引号实际上是同一组符号，所以在非西文环境下，
 引号可能会由不正确的字体渲染而导致宽度偏差，例如：
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   // 默认是中文
   "It's MyGO!" \
@@ -239,7 +240,7 @@ Typst 中有三种长度的“横线”可用：连字号（hyphen）、短破�
 
 Typst 可以直接输入三个点表示省略号，等价于 ```typ #sym.dots```。
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   // 确保使用正确的西文字体
   #set text(lang: "en", font: "New Computer Modern")
@@ -335,7 +336,7 @@ Typst 支持的所有符号可以参考文档 sym@typst-symbols。
 
 在书籍排版中，通常会要求章节从奇数页开始，此时可以用如下函数分隔章节：
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   #let insert-page(to: "odd") = {
     // 强制断页
@@ -389,7 +390,7 @@ Typst 支持的所有符号可以参考文档 sym@typst-symbols。
 中文排版传统上有着“孤字不成行、孤行不成页”的规则。实际原则如下：
 
 + 若段落末行仅有一个汉字，或一个汉字加上标点符号，即为孤字。
-  孤字可以以下方法处理，使段落末行能有两个汉字以上：
+  孤字可以用以下方法处理，使段落末行能有两个汉字以上：
 
   + 由前一行取一字至末行，前一行采用两端对齐。
 
@@ -397,7 +398,7 @@ Typst 支持的所有符号可以参考文档 sym@typst-symbols。
 
   + 在该段落增加文字。
 
-+ 若页面中第一行为前一页最后一个段落的末行，即为孤行。孤行可以以下方法处理：
++ 若页面第一行为前一页最后一个段落的末行，即为孤行。孤行可用以下方法处理：
 
   + 将孤行移至前一页，使其突出版心。
 

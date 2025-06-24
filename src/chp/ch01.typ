@@ -15,7 +15,7 @@
 Typst 是一个面向科学写作的新型排版系统，
 其设计目标是拥有与 LaTeX@latex 一样强大的排版能力，同时更易于学习和使用。
 Typst 还是一门标记（markup）语言，提供了类似 Markdown@markdown 的编写体验的同时，
-通过 `set` 和 `show` 组成的规则#footnote[使用方法将在后续章节中详细介绍。]，
+通过 `set` 和 `show` 组成的规则#footnote[使用方法详见 @设置规则。]，
 可以轻松地设置文档样式，内嵌的脚本支持也可以用于实现复杂的版面设计。
 
 Typst 的国际音标是 `/taɪpst/`，与汉字“泰普斯特”的发音接近。
@@ -97,19 +97,15 @@ Linux 或 macOS 等 \*nix#footnote[
 == 第一次使用 Typst
 
 
-@code-1-1 是一份最短的 Typst 源代码示例。
+@最短源代码示例 是一份最短的 Typst 源代码示例。
 
 #figure(kind: raw, caption: [Typst 的一个最简单的源代码示例。])[
-  #code-block(
-    linenumber: true,
-    top-bottom-stroke: true,
-    stroke-thickness: 0.04em,
-  )[
+  #code-block[
     ```typ
     Hello👋，world🌏!
     ```
   ]
-]<code-1-1>
+]<最短源代码示例>
 
 这里首先介绍如何编译使用这份源代码，在后续小节中再介绍源代码的细节。
 你可以将这份源代码保存为 `hello.typ`，然后编译。
@@ -129,18 +125,14 @@ Linux 或 macOS 等 \*nix#footnote[
 
   #h(-2em)如果编译成功，可以在 `hello.typ` 所在目录看到生成的 `hello.pdf`。
 
-@code-1-2 是在 Typst 排版中文的一个最简示例。
+@排版中文最简示例 是在 Typst 排版中文的一个最简示例。
 编译的方式与上一份源代码相同，只是需要将字体设置为系统中有的中文字体
 #footnote[
   文件应该保存为 UTF-8 编码。
 ]。
 
 #figure(kind: raw, caption: [在 Typst 中排版中文的最简源代码示例。])[
-  #code-block(
-    linenumber: true,
-    top-bottom-stroke: true,
-    stroke-thickness: 0.04em,
-  )[
+  #code-block[
     ```typ
     // 请将这里字体替换为系统中有的中文字体
     #set text(font: "Source Han Serif SC", lang: "zh")
@@ -148,7 +140,7 @@ Linux 或 macOS 等 \*nix#footnote[
     你好👋，世界🌏!
     ```
   ]
-]<code-1-2>
+]<排版中文最简示例>
 
 == Typst 的语法
 
@@ -290,10 +282,10 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
   定义函数的语法是：```typc let 函数名(参数列表) = 表达式```。
 
-  使用 `let` 还可以解构一些结构，例如数组，字典。
-  数组就是一系列元素，使用圆括号表示，例如：```typc (1, "2", [三])```；
-  字典就是由字符串作为“键”的*键值对*组成的列表，其中这个“键”是唯一的，
-  通过这个键我们可以找到这个字典中对应的值，也是用圆括号表示，
+  使用 `let` 还可以解构一些结构，例如数组和字典。
+  数组就是一系列元素，使用圆括号表示，例如：```typc (1, "2", [三])```。
+  字典是由字符串作为“键”的*键值对*组成的列表，也是用圆括号表示；
+  字典的“键”是唯一的，通过这个键我们可以找到这个字典中对应的值，
   例如：```typc ("a": 1, b: "2", "c": [三])```。
 
   下面是解构字典的语法示例：
@@ -304,14 +296,14 @@ Typst 的源代码是以纯文本文件的形式编写的。
         我: "I",
         他: "he",
       )
-      #let (你,) = 字典
-      你是#你。\
-      #let (他: ta) = 字典
-      他是#ta。\
-      #let (他, ..人) = 字典
-      #for (中, en) in 人 [
-        #中;是#en。\
-      ]
+    #let (你,) = 字典
+    你是#你。\
+    #let (他: ta) = 字典
+    他是#ta。\
+    #let (他, ..人) = 字典
+    #for (中, en) in 人 [
+      #中;是#en。\
+    ]
     ```]
 
   其中 `..人` 表示将字典中除了 `他` 键以外的所有键值对都收集到 `人` 上。
@@ -377,8 +369,8 @@ Typst 的源代码是以纯文本文件的形式编写的。
 
     #code-and-show(columns: (3fr, 2fr))[```typ
       #{
-        let list = (1, 2, 3)
-        for e in list [
+        let lst = (1, 2, 3)
+        for e in lst [
           #e;在列表中。\
         ]
         let dict = (a: 1, b: 2)
@@ -417,7 +409,7 @@ Typst 自从 #text(font: "Zhuque Fangsong (technical preview)")[v0.6.0] 内置�
 #code-card[```typ #import "@preview/example:0.1.0": add```]
 
 在引入包的时候，如果之前没有引入过这个包，或者没有使用这个版本，
-Typst 都会先在本地目录缓存（cache）这个包的对应版本，然后再进行使用。
+Typst 会先在本地目录缓存（cache）这个包的对应版本，然后再使用这个包。
 
 Typst 在本地缓存的包的具体路径为：`[缓存目录]/typst/packages/preview/[包名]/[版本]`，
 其中 `[缓存目录]` 默认是标准的用户缓存目录：
@@ -467,7 +459,7 @@ Typst 提供了函数 ```typc include``` 用来在源代码里插入文件：
 如果和要编译的主文件不在一个目录中，
 则要加上相对或绝对路径，例如：
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   #include "../chp02/sec01.typ" // 相对路径
   #include "/home/user/other/theme.typ" // *nix 绝对路径
@@ -479,10 +471,10 @@ Typst 提供了函数 ```typc include``` 用来在源代码里插入文件：
 如果使用过 LaTeX 可能会想到 ```tex \input``` 命令，
 但 Typst *并没有*提供等价的功能。
 
-如果你希望从其他文件中直接引入一些内容，可以使用 ```typc import```。
+如果想要从其他文件中直接引入一些内容，可以使用 ```typc import```。
 ```typc import``` 除了可以引入包，还可以引入具体文件中的内容，例如：
 
-#code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+#code-block[
   ```typ
   // main.typ 文件
   // 使用 import 导入 utils.typ 文件中的内容和函数
@@ -493,7 +485,7 @@ Typst 提供了函数 ```typc include``` 用来在源代码里插入文件：
 ]
 
 #grid(columns: (3fr, 2fr), align: center + horizon)[
-  #code-block(linenumber: true, top-bottom-stroke: true, stroke-thickness: 0.04em)[
+  #code-block[
     ```typ
     // utils.typ 文件
     #let some-content = [
@@ -510,7 +502,7 @@ Typst 提供了函数 ```typc include``` 用来在源代码里插入文件：
 
 最后，介绍一下如何实现几乎实时渲染的自动编译。
 只需将编译命令中的 `compile` 替换为 `watch` 即可。
-例如，如果要自动编译，并将缓存目录设置为 `~/typst/cache`，
+例如，如果想要自动编译，并将缓存目录设置为 `~/typst/cache`，
 特殊字体目录设置为 `./fonts`，数据目录设置为 `~/typst/data`，可以使用以下命令：
 
 #code-card[

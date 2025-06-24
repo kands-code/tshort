@@ -3,7 +3,6 @@
 #set text(
   size: 12pt,
   lang: "zh",
-  region: "cn", // 确保使用中国大陆简体规范
   fill: black,
   // 由于生成文档时默认禁用系统字体，
   // Emoji 字体默认回退为 Noto Color Emoji
@@ -25,8 +24,6 @@
 #set par(justify: true)
 // 设置引用格式为 gb-7714-2015-numeric
 #set cite(style: "gb-7714-2015-numeric", form: "normal")
-// 设置 figure 的编号方式
-#set figure(numbering: it => [ #counter(heading).get().first().#it ])
 // footnote 设置
 #show footnote.entry: it => {
   // 设置 footnote 字体大小为 12pt * 0.8
@@ -276,14 +273,8 @@
   #outline(
     title: none,
     depth: 3, // 最多显示三层目录
-    // 按照不同层级缩进，从 0 开始
-    indent: it => if it == 0 {
-      0em
-    } else if it == 1 {
-      1.6em
-    } else {
-      3.2em
-    },
+    // 每一层级缩进 1.6em
+    indent: 1.6em,
   )
 ]
 // 源码目录列表使用二级标题来符合格式要求
@@ -328,7 +319,7 @@
         #text(weight: "bold")[
           #if calc.even(current_page) {
             // 获取当前页面所属一级标题编号和内容
-            let level1_headings_title = level1_headings
+            let level1_heading_title = level1_headings
               .filter(it => it.location().page() <= current_page)
               .map(it => (counter(heading).get().first(), it.body))
               .rev()
@@ -339,37 +330,57 @@
               counter(page).display()
                 + h(1fr)
                 + [
-                  #numbering("第一章", level1_headings_title.first())#h(
+                  #numbering("第一章", level1_heading_title.first())#h(
                     1em,
-                  )#level1_headings_title.at(1)
+                  )#level1_heading_title.at(1)
                 ]
             )
           } else {
-            // 获取所有二级标题
+            // 获取最近的二级标题
             let level2_heading = query(heading.where(level: 2))
               .map(it => (
                 str(it.location().page()),
                 (it.location(), it), // 保留标题的 location 信息
               )) // 将页码由整数转为字符串
-              .rev() // 反转列表
-              .to-dict() // 去掉相同页面的二级标题，只保留第一个二级标题
+              .fold((:), (acc, e) => {
+                if acc.at(e.at(0), default: none) == none {
+                  // 如果该页码不在字典中，插入新值
+                  acc.insert(e.at(0), (e.at(1),))
+                } else {
+                  // 如果已经存在，先获取现在的值
+                  let entry = acc.at(e.at(0))
+                  // 将当前标题插入
+                  entry.push(e.at(1))
+                  // 更新字典
+                  acc.insert(e.at(0), entry)
+                }
+                // 返回更新后的字典
+                acc
+              }) // 将页码和标题收集为字典
               .pairs() // 将字典转为列表
               .map(((l2_page, l2_heading)) => (
                 int(l2_page),
                 l2_heading,
               )) // 将页码恢复为整数
               .filter(((l2_page, _)) => l2_page <= current_page)
-              .first() // 获取最接近的二级标题
-              .at(1) // 去除页码信息
+              .last() // 获取最接近的二级标题
+            // 检查标题位置
+            let level2_heading_title = if level2_heading.at(0) == current_page {
+              // 如果当前页面正好有二级标题，使用第一个标题
+              level2_heading.at(1).first()
+            } else {
+              // 如果当前页面没有二级标题，则使用最后一个标题
+              level2_heading.at(1).last()
+            }
             // 对于奇数页面，
             // 页眉格式为 <二级标题 间隔 页码>
             (
               // 通过 location 定位获取真实的 counter(heading)，
               // 然后格式化显示
               sym.section
-                + numbering("1.1", ..counter(heading).at(level2_heading.at(0)))
+                + numbering("1.1", ..counter(heading).at(level2_heading_title.at(0)))
                 + h(1em) // 编号与标题内容间隔 1em
-                + level2_heading.at(1).body // 标题内容
+                + level2_heading_title.at(1).body // 标题内容
                 + h(1fr) // 间隔
                 + counter(page).display() // 页码
             )
@@ -399,14 +410,14 @@
 
 // 设置附录
 // 附录一级标题显示为 <附录x>
-#show heading.where(level: 1): set heading(numbering: "附录A")
+#show heading.where(level: 1): set heading(numbering: "附录A", supplement: [附录])
 // 其他标题显示为 <x.x.x>
 #set heading(numbering: "A.1.1")
 // 重置标题计数，标题默认从 0 开始计数
 #counter(heading).update(0)
 // 引入附录内容
 #include "appendix.typ"
-#pagebreak(to: "odd", weak: true)
+#insert-page()
 
 // 正文结束后取消标题编号
 #show heading: set heading(numbering: none)
@@ -446,7 +457,7 @@
 // 参考文献使用 gb-7714-2015-numeric 格式
 // 参考内容引用自 refs.bib 文件
 #bibliography(style: "gb-7714-2015-numeric", "refs.bib")
-#pagebreak(to: "odd", weak: true)
+#insert-page()
 
 // -----------
 //  许可证部分
@@ -454,4 +465,5 @@
 
 // 引用许可证
 #include "license.typ"
-#pagebreak(to: "odd", weak: true)
+// 结束页面设置为偶数页，即便会产生空白纸张
+#insert-page(to: "even")
