@@ -25,32 +25,30 @@
 // 在目录中隐藏许可证内容的二级标题
 #show heading.where(level: 2): set heading(outlined: false)
 // 设置许可证页眉
-#set page(
-  header: context {
-    // 获取所有一级标题位置
-    let positions = query(heading.where(level: 1)).map(it => it.location().page())
-    // 获取当前页面真实位置
-    let current_page = here().page()
-    if current_page in positions {
-      // 如果是一级标题，不显示页眉
-      []
-    } else {
-      align(center + bottom)[
-        #text(weight: "bold")[
-          #if calc.even(current_page) [
-            // 否则对于偶数，格式为 <页码 间隔 标题>
-            #counter(page).display()#h(1fr)GNU Free Documentation License
-          ] else [
-            // 对于奇数，格式为 <间隔 页码>
-            #h(1fr)#counter(page).display()
-          ]
+#set page(header: context {
+  // 获取所有一级标题位置
+  let positions = query(heading.where(level: 1)).map(it => it.location().page())
+  // 获取当前页面真实位置
+  let current_page = here().page()
+  if current_page in positions {
+    // 如果是一级标题，不显示页眉
+    []
+  } else {
+    align(center + bottom)[
+      #text(weight: "bold")[
+        #if calc.even(current_page) [
+          // 否则对于偶数，格式为 <页码 间隔 标题>
+          #counter(page).display()#h(1fr)GNU Free Documentation License
+        ] else [
+          // 对于奇数，格式为 <间隔 页码>
+          #h(1fr)#counter(page).display()
         ]
-        #v(-0.48em)
-        #line(length: 100%, stroke: 0.64pt + black)
       ]
-    }
-  },
-)
+      #v(-0.48em)
+      #line(length: 100%, stroke: 0.64pt + black)
+    ]
+  }
+})
 
 = GNU Free Documentation License
 
@@ -492,7 +490,7 @@ To use this License in a document you have written, include a copy of
 the License in the document and put the following copyright and
 license notices just after the title page:
 
-```plaintext
+```txt
     Copyright (C) YEAR YOUR NAME.
     Permission is granted to copy, distribute and/or modify this document
     under the terms of the GNU Free Documentation License, Version 1.3
@@ -505,7 +503,7 @@ license notices just after the title page:
 If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts,
 replace the "with...Texts." line with this:
 
-```plaintext
+```txt
     with the Invariant Sections being LIST THEIR TITLES, with the
     Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
 ```

@@ -53,7 +53,12 @@
   }
 })
 // 设置 figure 的上下外间距
-#show figure: set block(above: 1.6em, below: 1.6em)
+#show figure: set block(
+  above: 1.6em,
+  below: 1.6em,
+  // 让 figure 可以跨页面
+  breakable: true,
+)
 // 设置 figure 标题的上下边距
 #show figure.caption: it => {
   // 标题字体应该要略小于正文字体
@@ -217,7 +222,11 @@
 // 设置段落缩进为 2em，所有段落都缩进
 #set par(
   first-line-indent: (amount: 2em, all: true),
-  leading: 0.8em, // 默认是 0.65em，稍微增加行间距
+  // 上一行底部边缘与下一行顶部边缘的间距
+  // > Leading defines the spacing
+  // > between the bottom edge of one line
+  // > and the top edge of the following line.
+  leading: 0.8em, // 默认是 0.65em
   linebreaks: "optimized", // 优化分行
 )
 // 引入前言
@@ -262,9 +271,7 @@
 // 一级标题与页码间使用空白填充
 #show outline.entry.where(level: 1): set outline.entry(fill: [])
 // 一级标题显示为粗体
-#show outline.entry.where(level: 1): it => {
-  text(weight: "bold", it)
-}
+#show outline.entry.where(level: 1): set text(weight: "bold")
 // 设置为双栏目录，不显示目录标题
 #columns(2)[
   // 字体大小设置为 11pt，方便显示标题
@@ -281,6 +288,13 @@
 // 设置 outlined: false 来隐藏标题
 #heading(level: 2, outlined: false)[源代码示例列表]
 // 设置源码列表目录
+#show outline.where(target: figure.where(kind: raw)): it => {
+  // 恢复默认间隔填充
+  show outline.entry: set outline.entry(fill: repeat(sym.dot, gap: 0.15em))
+  // 使用常规字重
+  show outline.entry: set text(weight: "regular")
+  it
+}
 #outline(
   title: none,
   // 列出所有的种类为 raw 的 figure 来生成目录

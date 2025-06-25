@@ -35,7 +35,7 @@ UTF-8 作为 Unicode 最为广泛采用的实现方式，
 这是因为不同语言在排版时，需要考虑断词规则、文字方向、标点禁则等诸多细节，
 这些细节对于生成高质量的文档至关重要。
 
-Typst 通过 `text` 函数的 `lang` 参数，可以指定文档或片段使用的语言。
+Typst 通过 `text` 函数的参数 `lang`，可以指定文档或片段使用的语言。
 Typst 采用符合 #link("https://en.wikipedia.org/wiki/ISO_639")[
   ISO 639-1/2/3 标准
 ]的二或三字符语言代码来标识不同的语言。
@@ -60,7 +60,7 @@ Typst 在处理中文排版时，一方面是对中文字体的支持，
 一旦指定了文档语言，Typst 便能自动应用相应的中文排版规则。
 
 Typst 会智能地寻找和使用系统中可用的字体，
-也可以通过 `text` 函数的 `font` 参数指定。
+也可以通过 `text` 函数的参数 `font`指定。
 `font` 的值可以是字体名称，还可以接受列表；
 Typst 将按列表顺序尝试使用，可用于处理字体回退或显示特殊字符。
 
@@ -95,7 +95,7 @@ CJK 内容中的西文内容使用 New Computer Modern Sans 字体，
   ```
 ]
 
-#show-block[
+#show-block(width: 96%)[
   // 恢复默认排版
   #set align(left)
   #set par(first-line-indent: 0em, justify: false)
@@ -118,10 +118,10 @@ CJK 内容中的西文内容使用 New Computer Modern Sans 字体，
 
 #code-card[
   ```typ
-  #set par(
+  #set par(justify: true, // 使用两端对齐
     first-line-indent: (amount: 2em, all: true),
-    justify: true, // 使用两端对齐
-    leading: 0.8em, // 段落内行间距，默认是 0.65em
+    // 上一行底部边缘与下一行顶部边缘的间距
+    leading: 0.8em, // 默认是 0.65em
   )
   ```
 ]
@@ -147,7 +147,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
   ```
 ]
 
-#show-block[
+#show-block(width: auto)[
   // 恢复默认排版
   #set align(left)
   #set par(first-line-indent: 0em, justify: false)
@@ -158,6 +158,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
   An empty line starts a new paragraph.#parbreak()
   A `parbreak` command does the same.
 ]
+
 
 === 特殊字符
 
@@ -207,7 +208,7 @@ Typst 源代码中，空格键和 #kbd[Tab] 键输入的空白字符视为“空
   ```
 ]
 
-#show-block[
+#show-block(width: auto)[
   // 默认是中文
   "It's MyGO!" \
   // 英文渲染
@@ -249,7 +250,7 @@ Typst 可以直接输入三个点表示省略号，等价于 ```typ #sym.dots```
   ```
 ]
 
-#show-block[
+#show-block(width: auto)[
   #set text(lang: "en", font: "New Computer Modern")
   one, two, three, ... one hundred. \
   one, two, three, #sym.dots one hundred.

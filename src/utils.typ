@@ -14,6 +14,7 @@
     ]
   ]
 }
+
 // 表示键盘按键
 #let kbd(
   body,
@@ -38,6 +39,7 @@
     )
   )
 }
+
 // 展示代码片段
 #let code-card(body, background: rgb(238, 238, 238)) = {
   // 取消段落缩进和调整
@@ -56,6 +58,7 @@
       ]
   )
 }
+
 // 展示代码块
 #let code-block(
   body,
@@ -101,16 +104,16 @@
             column-gutter: 1em,
             ..it
               .lines
-              .map(l => (
+              .map(line => (
                 // 使用 raw.line.number 获取行号
-                text(fill: numbercolor)[#l.number],
-                l.body,
+                text(fill: numbercolor)[#line.number],
+                line.body,
               ))
               .flatten()
           )
         } else {
           // 如果不显示行号，则左对齐显示所有内容
-          align(left, it.lines.map(l => l.body + linebreak()).join())
+          align(left, it.lines.map(line => line.body + linebreak()).join())
         }
       ]
     ]
@@ -118,15 +121,18 @@
   // 显示内容
   body
 }
+
 // 显示渲染示例
 #let show-block(
   body,
+  width: 100%,
   background: rgb(255, 253, 246), // 背景颜色
   stroke: 0.08em, // 边框厚度
   radius: 0.8em, // 圆角大小
 ) = {
   // 居中显示
   align(center, block(
+    width: width,
     fill: background,
     stroke: stroke,
     // 设置合理内边距
@@ -140,6 +146,7 @@
   ])
 }
 
+// 同时显示代码和渲染示例
 #let code-and-show(
   body,
   code-func: code-block,

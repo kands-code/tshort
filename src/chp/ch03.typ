@@ -42,9 +42,10 @@ Typst 理论上支持任意深度的标题层级，
       数字将被替换为对应序列中的字符，
       例如 ```typ #numbering("I", 16)``` 显示为 #raw(str(numbering("I", 16)))。
 
-      计数符号 `*` 表示使用符号来计数，
-      顺序为 #sym.ast、#sym.dagger、#sym.dagger.double、
-      #sym.section、#sym.pilcrow 以及 #sym.bar.v.double。
+      计数符号 `*` 表示使用符号计数，
+      顺序为 #sym.ast #sym.arrow.r #sym.dagger #sym.arrow.r
+      #sym.dagger.double #sym.arrow.r #sym.section #sym.arrow.r
+      #sym.pilcrow #sym.arrow.r #sym.bar.v.double。
       如果编号超过了符号个数，则使用重复的符号表示数字。
 
     / 后缀: 最后一个计数符号之后的所有字符，会在所有编号的末尾按原样重复。
@@ -93,12 +94,12 @@ Typst 理论上支持任意深度的标题层级，
 
 === 目录
 
-在 Typst 中生成目录非常容易，只需在合适的地方使用函数 `#outline()`。
+在 Typst 中生成目录非常容易，只需在合适的地方使用 `#outline()` 函数。
 
 这个函数会单独的一章，标题使用一级标题，并且标题内容会根据使用的语言自动选择，
 例如英语会使用 `Contents`，而中文会使用 `目录`。
 
-如果想要修改目录的标题，可以设置 `title` 参数，例如：
+如果想要修改目录的标题，可以设置参数 `title`，例如：
 
 #code-card[
   ```typ
@@ -212,7 +213,7 @@ Typst *并没有*提供用于划分文档结构的函数。
     ]。
   ]参数的默认值。
 
-  使用 `set` 可以避免重复设置，例如：
+  使用 `set` 可以避免重复设置参数默认值，例如：
 
   #code-card[
     ```typ
@@ -259,12 +260,10 @@ Typst *并没有*提供用于划分文档结构的函数。
 
   / 通过函数修改: 使用函数可以精细设置函数该如何渲染元素，例如：
 
-  #code-and-show[```typ
+  #code-and-show(columns: (5fr, 2fr))[```typ
     #emph[Before].
 
-    #show emph: it => [
-      「#it.body」
-    ]
+    #show emph: it => [「#it.body」]
     #emph[After].
     ```]
 
@@ -277,7 +276,11 @@ Typst *并没有*提供用于划分文档结构的函数。
 
 == 文档信息
 
-PDF 文档除了文档内容外，还包含了许多元数据信息，包括文档标题、创建日期、作者等。
+PDF 文档除了文档内容外，还包含了许多元数据信息#footnote[
+  请不要和 Typst 的 #link("https://typst.app/docs/reference/introspection/metadata")[
+    metadata
+  ] 混淆。
+]，包括文档标题、创建日期、作者等。
 要设置这些信息，可以使用 `document` 函数。例如：
 
 #figure(kind: raw, caption: [在 Typst 中设置 PDF 元数据信息源代码示例。])[
@@ -294,7 +297,7 @@ PDF 文档除了文档内容外，还包含了许多元数据信息，包括文�
   ]
 ]
 
-其中 `date` 参数接受 ```typc auto```、```typc none``` 和 `datetime` 类型的值。
+其中参数 `date` 接受 ```typc auto```、```typc none``` 和 `datetime` 类型的值。
 
 == 交叉引用<交叉引用>
 
@@ -316,7 +319,7 @@ PDF 文档除了文档内容外，还包含了许多元数据信息，包括文�
   ```]
 
 `ref` 函数的第一个参数是要引用的标签；
-`form` 参数可能值是 `"normal"` 或者 `"page"`，
+参数 `form` 可能值是 `"normal"` 或者 `"page"`，
 对应生成交叉引用的编号或对应页码。
 
 标签作为基本元素，可以使用 `show` 来设置规则：
@@ -362,7 +365,7 @@ PDF 文档除了文档内容外，还包含了许多元数据信息，包括文�
   ```
 ]
 
-#show-block[
+#show-block(width: auto)[
   #text(font: "Zhuque Fangsong (technical preview)")[
     “天地玄黄，宇宙洪荒。日月盈昃，辰宿列张。”
     #footnote[
@@ -392,8 +395,8 @@ PDF 文档除了文档内容外，还包含了许多元数据信息，包括文�
 
 === 列表
 
-Typst 提供了基本的有序和无序列表函数 `enum` 和 `list`。
-两者的用法很类似，都用位置参数标明每个列表项。
+Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数。
+这两个函数的用法十分类似，使用位置参数标明每个列表项。
 `enum` 函数会自动对列表项编号。
 
 #code-and-show[```typ
@@ -480,4 +483,229 @@ Typst 提供了基本的有序和无序列表函数 `enum` 和 `list`。
 
 === 引用函数
 
-有时需要引用一些名人名言等内容，此时就可以使用 `quote` 函数。
+有些时候，我们可能需要引用他人的言论、文章片段或经典语录。
+为了让这些引用内容在视觉上与正文区分开来，
+我们可以使用 `quote` 函数。
+
+如果引用的内容只是一句话，那么可以直接使用 `quote` 函数：
+
+#code-and-show(columns: (3fr, 2fr))[```typ
+  李白曾说过：#quote[噫吁嚱] \
+  李白曾说过：“噫吁嚱”
+  ```]
+
+可以看到，引用函数的基本样式就是在文本两边加上引号。
+但是，引用函数的引号不会与其它标点符号挤压，
+所以冒号和引号会各自占用一个汉字的宽度默认。
+
+在排版较长的引用内容时，通常会将其独立成一个块，以便与正文区分。
+此时可以将 `quote` 函数的参数 `block`，设置为 `true`：
+
+#code-block[
+  ```typ
+  《尸子》曾有云：
+  #quote(
+    block: true,
+    attribution: [卷下·散见诸书文汇辑],
+  )[
+    天地四方曰宇，往古来今曰宙。
+  ]
+  ```
+]
+
+#show-block(width: 80%)[
+  《尸子》曾有云：
+  #quote(block: true, attribution: [卷下·散见诸书文汇辑])[
+    天地四方曰宇，往古来今曰宙。
+  ]
+]
+
+其中参数 `attribution` 可用来标记引用来源。但是 `attribution` 默认使用的是 `---`，
+中文排版应该要使用 `------`，所以我们可以用如下方法设置：
+
+#figure(kind: raw, caption: [在 Typst 中设置中文引用样式。])[
+  #code-block[
+    ```typ
+    #show quote.where(block: true): it => [
+      // 默认宽度为 100%，水平内边距由 1em 增大为 2em
+      #align(center, block(width: 100%, inset: (x: 2em))[
+        // 引用内容字体大小略小于正文字体
+        #set text(size: 0.96em)
+        // 使用朱雀仿宋体展示引用内容
+        #align(left, text(
+          font: "Zhuque Fangsong (technical preview)",
+          it.body,
+        ))
+        #if it.attribution != none {
+          align(right)[------ #it.attribution]
+        }
+      ])
+    ]
+    #let qb = quote.with(block: true)
+
+    《尸子》曾有云：
+    #qb(attribution: [卷下·散见诸书文汇辑])[
+      天地四方曰宇，往古来今曰宙。
+    ]
+    ```
+  ]
+]
+
+#show-block(width: 80%)[
+  #show quote.where(block: true): it => [
+    // 默认宽度为 100%，水平内边距由 1em 增大为 2em
+    #align(center, block(width: 100%, inset: (x: 2em))[
+      // 引用内容字体大小略小于正文字体
+      #set text(size: 0.96em)
+      // 使用朱雀仿宋体展示引用内容
+      #align(left, text(
+        font: "Zhuque Fangsong (technical preview)",
+        it.body,
+      ))
+      #if it.attribution != none {
+        align(right)[------ #it.attribution]
+      }
+    ])
+  ]
+  #let qb = quote.with(block: true)
+
+  《尸子》曾有云：
+  #qb(attribution: [卷下·散见诸书文汇辑])[
+    天地四方曰宇，往古来今曰宙。
+  ]
+]
+
+其中 ```typ #let qb = quote.with(block: true)``` 表示将
+`quote` 函数的参数 `block` 的默认值设置为 ```typc true```，
+然后将修改默认值后的函数定义为 `qb`。
+这种方式不仅可以避免重复设置参数默认值，
+而且*不会*修改函数参数的全局默认值。
+
+如果要实现类似 LaTeX 中 `verse` 环境的效果，即首行悬挂缩进，可以使用：
+
+#code-card[
+  ```typ
+  #show quote.where(block: true): it => [
+    #set par(first-line-indent: (amount: -2em, all: true))
+    // 其他设置 ......
+  ]
+  ```
+]
+
+=== 代码函数
+
+有时我们需要将一段代码原样转义输出，这就要用到代码 `raw` 函数。
+`raw` 函数默认使用等宽字体排版代码，回车和空格也分别起到换行和空位的作用。
+
+#code-and-show(columns: (10fr, 7fr))[```typ
+  #raw("fn main() {\n"
+    + "    println!(\"hey!\");\n"
+    + "}", lang: "rs")
+  ```]
+
+和其他函数不同的是，`raw` 函数使用*字符串*作为参数，而不是内容。
+
+作为元素函数，`raw` 函数也有自己的标记语法，使用成对的反引号 ``` ` ``` 来标记。
+使用一对反引号时，使用行内渲染，并且默认代码语言是 `txt`，即普通文本。例如：
+
+#code-and-show(code-func: code-card)[```typ
+  `普通文本` 与正常内容
+  ```]
+
+使用三对及以上反引号时，可以设置代码语言，即参数 `lang`，例如：
+
+#code-and-show(code-func: code-card, columns: (3fr, 2fr))[````typ
+  Rust 代码：```rs struct A;```
+  ````]
+
+如果代码包含多行内容，则会自动使用行间渲染，例如：
+
+#code-and-show[````typ
+  测试代码块 ```c
+  #include <stdio.h>
+  int main() {
+    printf("hey!\n");
+    return 0;
+  }```
+  ````]
+
+默认情况下，`raw` 函数是没有行号显示的，
+但是可以通过 `raw.lines` 获取代码块的每一行的内容。
+我们可以使用这些内容自定义代码块渲染：
+
+#figure(kind: raw, caption: [在 Typst 中自定义代码块显示。])[
+  #code-block[
+    ````typ
+    #show raw.where(block: true): it => {
+      // 如果显示行号，则使用 grid 排版
+      grid(
+        // 行号右对齐，代码左对齐，水平居中
+        align: (right + horizon, left + horizon),
+        // 行号宽度自动，代码内容占据所有剩下的空间
+        columns: (auto, 1fr),
+        // 行间距设置为 0.64em
+        row-gutter: 0.64em,
+        // 行号和代码内容间距设置为 1em
+        column-gutter: 1em,
+        ..it.lines.map(line => (
+            // 使用 raw.line.number 获取行号
+            text(fill: rgb(112, 119, 161))[#line.number],
+            line.body,
+          ))
+          .flatten()
+      )
+    }
+
+    测试有行号的代码块：
+    ```c
+    #include <stdio.h>
+    int main() {
+      printf("hey!\n");
+      return 0;
+    }
+    ```
+    ````
+  ]
+]
+
+#show-block(width: 32%)[
+  #show raw.where(block: true): it => {
+    // 如果显示行号，则使用 grid 排版
+    grid(
+      // 行号右对齐，代码左对齐，水平居中
+      align: (right + horizon, left + horizon),
+      // 行号宽度自动，代码内容占据所有剩下的空间
+      columns: (
+        auto,
+        1fr,
+      ),
+      // 行间距设置为 0.64em
+      row-gutter: 0.64em,
+      // 行号和代码内容间距设置为 1em
+      column-gutter: 1em,
+      ..it
+        .lines
+        .map(l => (
+          // 使用 raw.line.number 获取行号
+          text(fill: rgb(112, 119, 161))[#l.number],
+          l.body,
+        ))
+        .flatten()
+    )
+  }
+
+  测试有行号的代码块：
+  ```c
+  #include <stdio.h>
+  int main() {
+    printf("hey!\n");
+    return 0;
+  }
+  ```
+]
+
+== 表格
+
+在 Typst 中可以轻松地排版表格。
+Typst 提供了 `grid` 和 `table` 两个函数用于排版表格内容。
+其中 `grid` 函数用于排版*表格布局*；而 `table` 函数用于显示*表格内容*。

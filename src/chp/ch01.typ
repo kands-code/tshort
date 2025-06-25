@@ -451,7 +451,7 @@ Typst 在本地缓存的包的具体路径为：`[缓存目录]/typst/packages/p
 单个源文件会让修改、校对变得十分困难。
 将源文件分割成若干个文件，会大大简化修改和校对的工作。
 
-Typst 提供了函数 ```typc include``` 用来在源代码里插入文件：
+Typst 提供了 ```typc include``` 用于在源代码里插入文件：
 
 #code-card[```typ #include "other.typ"```]
 
