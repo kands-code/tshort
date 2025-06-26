@@ -21,22 +21,19 @@
   background: rgb(235, 255, 216), // 背景颜色
   stroke-color: rgb(238, 238, 238), // 边框颜色
 ) = {
-  (
+  show raw: set text(fill: black.mix(blue.lighten(16%)))
+  text(
     // 使用标准等宽字体
-    text(
-      size: 11pt,
-      font: "Sarasa Fixed Slab SC",
-      math.space.thin // 与周围文字添加一点间隔
-        + box(
-          // 使用 block 包裹
-          fill: background,
-          outset: 0.24em,
-          stroke: 0.08em + stroke-color,
-          radius: 0.16em,
-          body, // 显示内容
-        )
-        + math.space.thin, // 与周围文字添加一点间隔
-    )
+    math.space.thin // 与周围文字添加一点间隔
+      + box(
+        // 使用 block 包裹
+        fill: background,
+        outset: 0.24em,
+        stroke: 0.04em + stroke-color,
+        radius: 0.16em,
+        raw(body), // 显示内容
+      )
+      + math.space.thin, // 与周围文字添加一点间隔
   )
 }
 
@@ -49,10 +46,10 @@
     h(2em)
       + box(
         fill: background,
-        // 圆角大小设置为 0.48em
-        radius: 0.48em,
-        // 上下边距为 0.64em，左右边距 2em
-        inset: (y: 0.64em, x: 2em),
+        // 圆角大小设置为 0.32em
+        radius: 0.32em,
+        // 上下边距为 0.64em，左右边距 1em
+        inset: (y: 0.64em, x: 1em),
       )[
         #body
       ]
@@ -127,8 +124,8 @@
   body,
   width: 100%,
   background: rgb(255, 253, 246), // 背景颜色
-  stroke: 0.08em, // 边框厚度
-  radius: 0.8em, // 圆角大小
+  stroke: 0.04em + black.lighten(32%), // 边框厚度和颜色
+  radius: 0.32em, // 圆角大小
 ) = {
   // 居中显示
   align(center, block(
@@ -151,13 +148,14 @@
   body,
   code-func: code-block,
   columns: (1fr, 1fr),
+  width: auto,
   align: center + horizon,
 ) = {
   grid(
     columns: columns,
     align: align,
     code-func[#body],
-    show-block[
+    show-block(width: width)[
       #eval(body.text, mode: "markup")
     ]
   )

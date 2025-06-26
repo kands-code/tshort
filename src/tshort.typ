@@ -292,7 +292,7 @@
   // 恢复默认间隔填充
   show outline.entry: set outline.entry(fill: repeat(sym.dot, gap: 0.15em))
   // 使用常规字重
-  show outline.entry: set text(weight: "regular")
+  show outline.entry: set text(weight: "regular", fill: rgb(37, 77, 112))
   it
 }
 #outline(

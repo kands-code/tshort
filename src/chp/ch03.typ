@@ -276,14 +276,14 @@ Typst *并没有*提供用于划分文档结构的函数。
 
 == 文档信息
 
-PDF 文档除了文档内容外，还包含了许多元数据信息#footnote[
+PDF 文档除了文档内容，还包含许多元数据#footnote[
   请不要和 Typst 的 #link("https://typst.app/docs/reference/introspection/metadata")[
     metadata
   ] 混淆。
 ]，包括文档标题、创建日期、作者等。
-要设置这些信息，可以使用 `document` 函数。例如：
+要设置这些元数据，可以使用 `document` 函数。例如：
 
-#figure(kind: raw, caption: [在 Typst 中设置 PDF 元数据信息源代码示例。])[
+#figure(kind: raw, caption: [在 Typst 中设置 PDF 元数据源代码示例。])[
   #code-block[
     ```typ
     #set document(
@@ -496,7 +496,9 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
 
 可以看到，引用函数的基本样式就是在文本两边加上引号。
 但是，引用函数的引号不会与其它标点符号挤压，
-所以冒号和引号会各自占用一个汉字的宽度默认。
+所以冒号和引号会各自占用一个汉字的宽度默认#footnote[
+  可以使用 ```typ #set text(features: ("pwid",))``` 解决，但是这依赖于字体的实现方式。
+]。
 
 在排版较长的引用内容时，通常会将其独立成一个块，以便与正文区分。
 此时可以将 `quote` 函数的参数 `block`，设置为 `true`：
@@ -504,10 +506,7 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
 #code-block[
   ```typ
   《尸子》曾有云：
-  #quote(
-    block: true,
-    attribution: [卷下·散见诸书文汇辑],
-  )[
+  #quote(block: true, attribution: [卷下·散见诸书文汇辑])[
     天地四方曰宇，往古来今曰宙。
   ]
   ```
@@ -523,7 +522,7 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
 其中参数 `attribution` 可用来标记引用来源。但是 `attribution` 默认使用的是 `---`，
 中文排版应该要使用 `------`，所以我们可以用如下方法设置：
 
-#figure(kind: raw, caption: [在 Typst 中设置中文引用样式。])[
+#figure(kind: raw, caption: [在 Typst 中设置中文引用样式源代码示例。])[
   #code-block[
     ```typ
     #show quote.where(block: true): it => [
@@ -633,7 +632,7 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
 但是可以通过 `raw.lines` 获取代码块的每一行的内容。
 我们可以使用这些内容自定义代码块渲染：
 
-#figure(kind: raw, caption: [在 Typst 中自定义代码块显示。])[
+#figure(kind: raw, caption: [在 Typst 中自定义代码块显示源代码示例。])[
   #code-block[
     ````typ
     #show raw.where(block: true): it => {
@@ -668,7 +667,7 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
   ]
 ]
 
-#show-block(width: 32%)[
+#show-block(width: 36%)[
   #show raw.where(block: true): it => {
     // 如果显示行号，则使用 grid 排版
     grid(
@@ -709,3 +708,317 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
 在 Typst 中可以轻松地排版表格。
 Typst 提供了 `grid` 和 `table` 两个函数用于排版表格内容。
 其中 `grid` 函数用于排版*表格布局*；而 `table` 函数用于显示*表格内容*。
+
+一个基本的表格示例如下：
+
+#code-and-show(columns: (7fr, 3fr))[```typ
+  #table(
+    columns: (1fr, 1fr),
+    table.header([*表头1*], [*表头2*]),
+    [行1列1], [行1列2],
+    [行2列1], [行2列2],
+    [行3列1], [行3列2],
+    table.footer([_表尾 1_], [_表尾 2_]),
+  )
+  ```]
+
+其中，`table.header` 用于设置表头，`table.footer` 用于设置表尾。
+如果表格在一页无法完全展示，那么表格会被自动截断，
+但是表头和表尾会在每一页都显示。
+
+=== 行列格式
+
+`table` 函数使用参数 `columns`、`rows` 和 `align` 分别设置列宽、行高以及对齐方式。
+
+其中，`1fr` 是一个相对长度，表示“一份”。
+例如 `columns: (2fr, 1fr)` 表示将表格的宽度分成了三份，第一列占两份，第二列占一份。
+相对长度除了可以使用 `fr` 表示，还可以使用百分比，例如 `columns: (67%, 33%)`。
+
+如果要设置表格内容的对齐方式，可以使用参数 `align`。例如：
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  #table(columns: (1fr, 1fr),
+    align: (center + top ,right + horizon),
+    [A], [B\ V], [C\ V], [D],
+  )
+  ```]
+
+其中，列对齐可以使用水平方向的对齐方式调整；
+行对齐可以使用竖直方向的对齐方式来调整。
+如果需要更加精细的对齐方式，参数 `align` 还可以接受一个函数，
+其中函数的参数是两个整数，对应单元格的列坐标和行坐标：
+
+#code-and-show(columns: (7fr, 3fr))[```typ
+  #table(columns: (1fr, 1fr, 1fr),
+    align: (col, row) => { // 坐标从零开始
+      if calc.even(col) { right + bottom }
+      else if calc.even(row) {
+        center + horizon
+      } else { left + top }
+    }, [A], [B\ V], [C], [D], [E], [F \ V])
+  ```]
+
+
+如果只想调整特定的单元格的对齐方式，可以使用 `table.cell` 函数。例如：
+
+#code-block[
+  ```typ
+  #table(columns: (1fr, 2fr), align: center + horizon,
+    [A], table.cell(align: right + bottom)[special text],
+    [B], [normal text])
+  ```
+]
+
+=== 网格线
+
+如果想要手动调整表格的样式，例如想要绘制三线表，
+那么可以把 `table` 函数与 `table.hline` 和 `table.vline` 函数配合使用。
+
+这里简单展示一下如何使用这两个网格线函数：
+
+#code-and-show(columns: (7fr, 3fr))[```typ
+  #table(columns: (3em, 3em, 3em),
+    rows: 3em, // 行高设置为 3em
+    align: center + horizon,
+    stroke: none, // 取消默认网格线
+    [4], [9], [2],
+    [3], [5], [7],
+    [8], [1], [6],
+    table.hline(y: 1, start: 1),
+    table.vline(x: 1),
+    table.vline(x: 0), table.vline(x: 3),
+    table.hline(y: 3, start: 0, end: 1),
+    table.hline(y: 0), table.hline(y: 3))
+  ```]
+
+其中，`table.hline` 有四个参数可以使用，分别是 `y`,、`start`、`end` 以及 `position`。
+
+/ y: 表示横线的起始行，默认等于函数所在位置的内容的行坐标。
+
+/ start/end: 表示从横线的起始/结束点的列坐标。
+
+/ position#footnote[
+    除非设置了表格行间距，否则不应该设置参数 `position`。
+  ]: 在 `y` 的基础上调整横线位置，可选值有 `top` 和 `bottom`，默认是 `top`。
+
+`table.vline` 函数的参数与 `table.hline` 函数类似，仅将 `y` 换成了 `x`，行列坐标互换；
+参数 `position` 的可选值有 `right` 和 `left`，默认是 `left`。
+
+下面是一个三线表的例子：
+
+#code-block[
+  ```typ
+  #table(columns: (3fr, 1fr, 1fr, 1fr),
+    align: center + horizon,
+    stroke: none, // 取消默认网格线
+    rows: 2.4em, // 稍微增加行高
+    table.hline(y: 0, start: 0, end: 4, stroke: 0.08em),
+    table.header( // 表头内容
+      [], table.cell(colspan: 3)[*Numbers*],
+      table.hline(y: 1, start: 1, end: 4, stroke: 0.04em),
+      [], [*1*], [*2*], [*3*]),
+    table.hline(y: 2, start: 0, end: 4, stroke: 0.06em),
+    [*Alphabeta*], [A], [B], [C],
+    [*Roman*], [I], [II], [III],
+    table.hline(y: 4, start: 0, end: 4, stroke: 0.08em))
+  ```
+]
+
+#show-block(width: 80%)[
+  #table(
+    columns: (3fr, 1fr, 1fr, 1fr),
+    align: center + horizon,
+    // 取消默认网格线
+    stroke: none,
+    // 稍微增加行高
+    rows: 2.4em,
+    // 表头线
+    table.hline(stroke: 0.08em),
+    table.header(
+      // 表头内容
+      [], table.cell(colspan: 3)[*Numbers*],
+      // 内部分隔线
+      table.hline(y: 1, start: 1, end: 4, stroke: 0.04em),
+      [], [*1*], [*2*], [*3*],
+    ),
+    // 分隔线
+    table.hline(stroke: 0.06em),
+    [*Alphabeta*], [A], [B], [C],
+    [*Roman*], [I], [II], [III],
+    // 表底线
+    table.hline(stroke: 0.08em),
+  )
+]
+
+对于这三条线，可以使用 `with` 方法设置默认值以方便使用：
+
+#code-block[
+  ```typ
+  #let middle-line = table.hline.with(stroke: 0.06em)
+  #let top-bottom-line = table.hline.with(stroke: 0.08em)
+  #let inner-middle-line = table.hline.with(stroke: 0.04em)
+  ```
+]
+
+=== 合并单元格
+
+通过 `table.cell` 函数的参数 `colspan` 和 `rowspan` 可以实现合并单元格。例如：
+
+#code-block[
+  ```typ
+  #table(columns: (1fr, 2fr, 4fr),
+    align: center + horizon, inset: 1.2em,
+    table.cell(rowspan: 2, rotate(-90deg, reflow: true)[*标题*]),
+    [2], [Center], [3], table.cell(align: right)[Right],
+    table.cell(colspan: 2)[4], [C],
+  )
+  ```
+]
+
+#show-block(width: 64%)[
+  #table(
+    columns: (1fr, 2fr, 4fr),
+    align: center + horizon,
+    inset: 1.2em,
+    table.cell(rowspan: 2, rotate(-90deg, reflow: true)[*标题*]),
+    [2], [Center], [3], table.cell(align: right)[Right],
+    table.cell(colspan: 2)[4], [C],
+  )
+]
+
+其中，`rotate` 函数可以旋转内容。
+参数 `reflow` 设置为 `true` 时，`rotate` 函数会调整内容的边界框，*可能改变布局*。
+中文内容建议将参数 `reflow` 设置为 `true` 以避免：
+
+#code-and-show(columns: (4fr, 1fr), width: auto)[```typ
+  #block(width: 11%)[#rotate(-90deg)[*标题*]]
+  ```]
+
+=== 间距控制
+
+通过调整 `table` 函数的参数 `gutter` 可以设置单元格的间距。
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  #table(
+    columns: (1fr, 1fr, 1fr),
+    align: center + horizon,
+    [a], [b], [c],
+    [d], [e], [f],
+    [g], [h], [i],
+  )
+
+  #table(
+    columns: (1fr, 1fr, 1fr),
+    align: center + horizon,
+    gutter: (1em, 0pt),
+    [a], [b], [c],
+    [d], [e], [f],
+    [g], [h], [i],
+  )
+  ```]
+
+或者通过参数 `row-gutter` 和 `column-gutter` 来具体设置行间距和列间距。
+
+如果传递一个长度给参数 `gutter`，所有的行间距和列间距都会被设置为这个长度。
+如果传递一个长度列表，那么 `gutter` 会依次应用间距。
+
+具体来说，如果列表长度大于表格的行数或列数，那么表格的间距等于列表中对应的值；
+如果列表长度小于表格行数或列数，那么最后一个值将被重复使用。
+
+=== grid 函数
+
+`grid` 函数与 `table` 函数基本一致，除了：
+
+/ stroke: `table` 函数默认会绘制边框#footnote[
+    边框默认设置为 `stroke: 1pt + black`。
+  ]，`grid` 函数不会。
+
+/ inset: `table` 函数的单元格默认有 `5pt` 的竖直内边距，`grid` 函数没有。
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  #table(
+    columns: (1fr, 1fr, 1fr),
+    align: center + horizon,
+    [a], [b], [c],
+    [d], [e], [f],
+    [g], [h], [i],
+  )
+  ```]
+
+所以通过修改参数，`grid` 和 `table` 函数可以实现相同的效果：
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  #grid(
+    columns: (1fr, 1fr, 1fr),
+    stroke: 1pt + black,
+    inset: (y: 5pt),
+    align: center + horizon,
+    [a], [b], [c],
+    [d], [e], [f],
+    [g], [h], [i],
+  )
+  ```]
+
+== 图片
+
+Typst 支持插入 `.png`、`.jpg`、`.gif` 和 `.svg` 格式的图片。
+你可以传入路径字符串，或者以字节的形式传入图片，然后按照如下方式指定图片格式：
+
+/ encoding: 编码方式，目前支持 `"rgb8"`、`"rgba8"`、`"luma8"` 以及 `"lumaa8"`。
+
+/ width: 一个整数，表示图片的像素宽度。
+
+/ height: 一个整数，表示图片的像素高度。
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  #image(
+    bytes(range(16).map(x => x * 16)),
+    format: (
+      encoding: "luma8",
+      width: 4,
+      height: 4,
+    ),
+    width: 2cm,
+  )
+  ```]
+
+除了使用参数 `format` 指定图片的格式，`image` 函数还有一些常用参数：
+
+/ width: 图片的宽度，接受一个相对长度。将图片宽度调整至其原始尺寸的相应比例。
+
+/ height: 图片的高度，接受一个相对长度。将图片高度调整至其原始尺寸的相应比例。
+
+/ alt: 图片的描述文本，是一个字符串。
+
+/ fit: 图片的调整策略，如果剩余空间不足以显示图像该如何调整图片。目前的策略有：
+  / cover: 覆盖，或者说裁剪。
+
+    图片比例不变，尽可能覆盖剩余空间，超出部分被舍弃。
+
+  / contain: 包含。
+
+    保持图片比例不变，但是缩小图片让图片能够在剩余空间完整显示。
+
+  / stretch: 拉伸。
+
+    改变图片比例，让图片完全填充剩余空间。
+
+如果想要旋转图片，可以使用之前提到的 `rotate` 函数：
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  #rotate(45deg, reflow: true)[
+    #image(
+      bytes(range(16).map(x => x * 16)),
+      format: (
+        encoding: "luma8",
+        width: 4,
+        height: 4,
+      ),
+      width: 2cm,
+    )
+  ]
+  ```]
+
+== 盒子
+
+
