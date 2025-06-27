@@ -39,21 +39,17 @@
 
 // 展示代码片段
 #let code-card(body, background: rgb(238, 238, 238)) = {
-  // 取消段落缩进和调整
-  set par(first-line-indent: 0em, justify: false)
-  // 手动缩进 2em
-  (
-    h(2em)
-      + box(
-        fill: background,
-        // 圆角大小设置为 0.32em
-        radius: 0.32em,
-        // 上下边距为 0.64em，左右边距 1em
-        inset: (y: 0.64em, x: 1em),
-      )[
-        #body
-      ]
-  )
+  box(
+    fill: background,
+    // 圆角大小设置为 0.32em
+    radius: 0.32em,
+    // 上下边距为 0.64em，左右边距 1em
+    inset: (y: 0.64em, x: 1em),
+  )[
+    // 取消段落缩进和调整
+    #set par(first-line-indent: 0em, justify: false)
+    #body
+  ]
 }
 
 // 展示代码块

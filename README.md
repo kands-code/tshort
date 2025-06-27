@@ -4,6 +4,11 @@
 文档的大部分内容是模仿 lshort 的方式编写，在部分地方调整为对应的 Typst 内容，
 并且对于常见的排版问题做了一定的补充说明。
 
+## TODO
+
+- [ ] 完成大概内容编写，目前已完成前三章内容。
+- [ ] 等 Typst 能够处理好[换行空格问题](https://github.com/typst/typst/issues/792)后重新排版和调整内容。
+
 ## 许可证
 
 This document is licensed under the [**GNU Free Documentation License, Version 1.3**](LICENSE).

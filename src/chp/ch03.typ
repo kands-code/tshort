@@ -34,7 +34,7 @@ Typst 理论上支持任意深度的标题层级，
 
 / numbering: 用于控制标题的编号。
 
-  Typst 中，编号方式可以使用编号模式或者编号函数来设置。
+  在 Typst 中，编号方式可以使用编号模式或者编号函数来设置。
 
   / 编号模式: 一个字符串，其中包含了“计数符号”、“后缀”和“前缀”。
 
@@ -92,7 +92,7 @@ Typst 理论上支持任意深度的标题层级，
     默认情况下该标题也会显示在 PDF 大纲中。
   ]。
 
-=== 目录
+=== 目录<ch-3-目录>
 
 在 Typst 中生成目录非常容易，只需在合适的地方使用 `#outline()` 函数。
 
@@ -548,7 +548,7 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
     ]
     ```
   ]
-]
+]<设置中文引用样式示例>
 
 #show-block(width: 80%)[
   #show quote.where(block: true): it => [
@@ -933,7 +933,7 @@ Typst 提供了 `grid` 和 `table` 两个函数用于排版表格内容。
     边框默认设置为 `stroke: 1pt + black`。
   ]，`grid` 函数不会。
 
-/ inset: `table` 函数的单元格默认有 `5pt` 的竖直内边距，`grid` 函数没有。
+/ inset: `table` 函数的单元格默认有 `5pt` 的内边距，`grid` 函数没有。
 
 #code-and-show(columns: (5fr, 3fr))[```typ
   #table(
@@ -951,7 +951,7 @@ Typst 提供了 `grid` 和 `table` 两个函数用于排版表格内容。
   #grid(
     columns: (1fr, 1fr, 1fr),
     stroke: 1pt + black,
-    inset: (y: 5pt),
+    inset: 5pt,
     align: center + horizon,
     [a], [b], [c],
     [d], [e], [f],
@@ -1021,4 +1021,214 @@ Typst 支持插入 `.png`、`.jpg`、`.gif` 和 `.svg` 格式的图片。
 
 == 盒子
 
+如果曾经接触过网页设计，对“盒模型”这一概念想必不会陌生。
+在排版中，文档的每一个元素都可被视为一个矩形“盒子”，包含内容、内边距、边框以及外边距。
+Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建自己的盒子。
 
+=== box 函数
+
+在 Typst 中，除了行内数学、文本以及 `box`，其他所有元素均为块级元素。
+
+一个元素是块级元素意味着这个元素默认情况下会独占一行，无法与其他元素并列一行。
+但是 `box` 函数可以把这些块级元素“打包”成一个行内元素，例如：
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  一个图片：#box(
+    baseline: 0.64em,
+    image(
+      bytes(range(16).map(x => x * 16)),
+      format: (
+        encoding: "luma8",
+        width: 4, height: 4),
+      width: 2em,
+    ))！
+  ```]
+
+可以看到，文本和图片确实在同一行了，其中参数 `baseline` 可用于调整基线位置。
+使用 `underline` 函数可以确认基线位置，下划线默认会生成在基线处。
+
+如果想要控制行内元素的对齐方式，可以将 `box` 函数与 `align` 函数结合起来使用：
+
+#code-block[
+  ```typ
+  #let makebox(
+    body,
+    width: auto, height: auto,
+    stroke: none, inset: 0%,
+    alignment: center,
+  ) = {
+    box(width: width, height: height, stroke: stroke, inset: inset)[
+      #align(alignment, body)
+    ]
+  }
+
+  |#makebox(width: 10em)[测试文本]| \
+  |#makebox(width: 10em, alignment: left)[测试文本]| \
+  |#makebox(width: 10em, alignment: right)[测试文本]|
+  ```
+]
+
+#show-block(width: auto)[
+  #let makebox(
+    body,
+    width: auto,
+    height: auto,
+    stroke: none,
+    inset: 0%,
+    alignment: center,
+  ) = {
+    box(width: width, height: height, stroke: stroke, inset: inset)[
+      #align(alignment, body)
+    ]
+  }
+
+  |#makebox(width: 10em)[测试文本]| \
+  |#makebox(width: 10em, alignment: left)[测试文本]| \
+  |#makebox(width: 10em, alignment: right)[测试文本]|
+]
+
+其中 `box` 函数的参数 `width` 和 `height` 用于调整行内元素的大小。
+
+=== 盒子边框
+
+许多函数有一个参数 `stroke`，表示元素的边框。
+对于文本而言，边框就是文字本身，所以文本的参数 `stroke` 对应的是文本的描边：
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  #text(stroke: 1pt + red)[测试文本] \
+  测试文本
+  ```]
+
+而 `box` 的参数 `stroke` 则是对应行内元素的边框，例如：
+
+#code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
+  #box(stroke: 1pt + blue.lighten(32%))[测试文本]
+  ```]
+
+如果想要为元素加上边框，还可以使用 `rect` 函数：
+
+#code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
+  #rect(stroke: 1pt + blue.lighten(32%))[测试文本]
+  ```]
+
+`rect` 函数和 `box` 函数的关系与 `table` 函数和 `grid` 函数的关系非常类似，
+`rect` 函数的参数 `stroke` 默认设为 `1pt + black`，并且有 `5pt` 的内边距，而 `box` 函数没有。
+
+通过设置参数 `stroke`，可以设置边框的样式，设置参数 `inset` 可以调整边框与内容的距离。
+如果要调整对齐方式，可以将 `box` 函数或者 `rect` 函数与 `align` 函数配合使用。
+
+#code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
+  #rect(inset: 1em, radius: 1em, stroke: stroke(
+    dash: "dash-dotted", thickness: 1.6pt,
+    paint: gradient.linear(red, blue),
+  ))[#align(right + horizon)[测试文本]]
+  ```]
+
+关于参数 `stroke` 的具体设置方式，
+可以参考 #link("https://typst.app/docs/reference/visualize/rect/#parameters-stroke")[rect-stroke]
+以及 #link("https://typst.app/docs/reference/visualize/stroke")[stroke 类型]。
+
+=== 基线调整
+
+要在一行内排版多行内容，最关键的就是要调整好基线。
+一般会使用 `em` 作为单位，因为 `1em` 等于当前文本的大小（size），不需要换算：
+
+#code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
+  #{ [`1em` 长度：] + context measure(h(1em)).width } \
+  #{ [m 的宽度：] + context measure([m]).width } \
+  #{ [汉的宽度：] + context measure([汉]).width } \
+  #{ [汉的高度：] + context measure([汉]).height } \
+  #set text(size: 10pt)
+  #{ [改变后：] + context measure(h(1em)).width }
+  ```]
+
+其中，`measure` 函数可以获取任意元素的大小信息。
+
+下面是一个调整基线的例子：
+
+#code-block[
+  ```typ
+  行内调整基线对齐：\ 三字经：#box(baseline: 3 * (8.75pt + 0.8em))[
+    // 向下移动三行，每行间隔 0.8em，默认间隔 0.65em
+    人之初\ 性本善\ 性相近\ 习相远
+  ]，千字文：#box[天地玄黄\ 宇宙洪荒] \
+  测试下一行文本位置
+  ```
+]
+
+#show-block(width: auto)[
+  行内调整基线对齐：\ 三字经：#box(baseline: 3 * (8.75pt + 0.8em))[
+    // 向下移动三行，每行间隔 0.8em，默认间隔 0.65em
+    人之初\ 性本善\ 性相近\ 习相远
+  ]，千字文：#box[天地玄黄\ 宇宙洪荒] \
+  测试下一行文本位置
+]
+
+=== block 函数
+
+`block` 函数用于构造一个块级元素。
+例如 @设置中文引用样式示例 使用 `block` 函数构造块级引用样式。
+
+下面是一个使用 `block` 和 `move` 函数构造自定义块级元素的例子：
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  #let sticker(body) = block(
+    stroke: 1pt + rgb(78, 31, 0),
+    inset: 0em,
+    radius: 0.32em,
+    fill: rgb(243, 198, 35),
+    move(dx: 0.5em, dy: 0.5em, block(
+      stroke: 1pt + rgb(116, 81, 45),
+      inset: 1em,
+      radius: 0.32em,
+      fill: yellow.lighten(64%),
+      body,
+    )),
+  )
+  #sticker[自定义块级元素]
+  ```]
+
+其中 `move` 函数用于相对父级元素移动当前元素。
+
+== 浮动体
+
+排版文档时，经常能遇到许多图片和表格等内容，有些内容的尺寸往往太大而导致分页困难。
+使用浮动体让大块的内容可以脱离上下文，放置在合适的位置。
+
+要使用浮动体，可以使用 `figure` 函数，使用参数 `kind` 可以说明图表内容的类别。
+图表默认是不浮动的。
+如果要让图表变成浮动体，可以设置参数 `placement` 为 `auto`、`top` 或者 `bottom`，
+默认值是 `none`。例如：
+
+#code-card[
+  ```typ
+  #figure(caption: [_A example of gradient_],
+    placement: bottom,
+    kind: image, numbering: none,
+  )[
+    #block(width: 12em, height: 12em, radius: 6em, fill: gradient
+      .radial(..color.map.rocket)
+      .repeat(4))
+  ]
+  #lorem(32)
+  ```
+]
+
+参数 `caption` 可用于为图表添加标题或注释。
+
+#show-block[
+  #figure(placement: bottom, caption: [_A example of gradient_], numbering: none, kind: image)[
+    #block(width: 12em, height: 12em, radius: 6em, fill: gradient
+      .radial(..color.map.rocket)
+      .repeat(4))
+  ]
+  #lorem(32)
+]
+
+可以看到，按照顺序，文本应该显示在图表下面，
+但由于图片使用了浮动体，要求排版到底部，
+所以文本反而显示在了图表上面。
+
+=== 图表目录
+
+在 @ch-3-目录 中提到 `outline` 函数的参数 `target` 可以用于筛选目录要显示的内容。
