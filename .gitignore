@@ -2,3 +2,5 @@
 **/*.pdf
 # ignore fonts
 fonts/
+# ignore test files
+**/test.*
