@@ -54,17 +54,11 @@
 })
 // 设置 figure 的上下外间距
 #show figure: set block(
-  above: 1.6em,
-  below: 1.6em,
+  above: 2em,
+  below: 2em,
   // 让 figure 可以跨页面
   breakable: true,
 )
-// 设置 figure 标题的上下边距
-#show figure.caption: it => {
-  // 标题字体应该要略小于正文字体
-  set text(size: 0.96em)
-  v(0.8em) + it + v(0.32em)
-}
 // 设置链接和引用的的文本颜色
 #show link: set text(fill: rgb(87, 123, 193))
 #show ref: set text(fill: rgb(52, 76, 183))
@@ -417,6 +411,9 @@
 // 第三章内容
 #include "chp/ch03.typ"
 #insert-page()
+// 第四章内容
+#include "chp/ch04.typ"
+#insert-page()
 
 // ---------
 //  附录部分
@@ -470,7 +467,7 @@
 
 // 参考文献使用 gb-7714-2015-numeric 格式
 // 参考内容引用自 refs.bib 文件
-#bibliography(style: "gb-7714-2015-numeric", "refs.bib")
+#bibliography(style: "gb-7714-2015-numeric", "refs.bib")<ch-1-reference>
 #insert-page()
 
 // -----------

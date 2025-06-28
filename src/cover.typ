@@ -7,7 +7,10 @@
   #line(length: 100%, stroke: 0.5em)
   #align(right)[
     #text(size: 1.6em, font: "Zhuque Fangsong (technical preview)")[
-      或 #text(fill: red)[111] 分钟了解 Typst
+      或 #text(
+        fill: red,
+        context { counter(page).at(locate(<ch-1-reference>)).at(0) },
+      ) 分钟了解 Typst
     ]
   ]
 ]

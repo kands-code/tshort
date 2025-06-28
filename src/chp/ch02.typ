@@ -277,7 +277,7 @@ Typst *不支持*用符号输入西欧语言中各种拉丁文扩展字符#footn
 
 === 其他符号
 
-Typst 预定义了其它一些文本模式的符号 ，部分符号可参考表 TODO(table 4.4)。
+Typst 预定义了其它一些文本模式的符号，可以用 `#sym.[符号名称]` 的格式使用。
 
 #code-and-show(columns: (5fr, 2fr))[```typ
   #sym.pilcrow    #sym.section

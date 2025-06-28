@@ -1214,10 +1214,10 @@ Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建�
   ```
 ]
 
-参数 `caption` 可用于为图表添加标题或注释。
+参数 `caption` 可用于为图表添加标题。
 
 #show-block[
-  #figure(placement: bottom, caption: [_A example of gradient_], numbering: none, kind: image)[
+  #figure(placement: bottom, caption: [_An example of gradient_], numbering: none, kind: image)[
     #block(width: 12em, height: 12em, radius: 6em, fill: gradient
       .radial(..color.map.rocket)
       .repeat(4))
@@ -1225,10 +1225,171 @@ Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建�
   #lorem(32)
 ]
 
-可以看到，按照顺序，文本应该显示在图表下面，
-但由于图片使用了浮动体，要求排版到底部，
+可以看到，按照渲染顺序，文本应该显示在图表下面，
+但图片使用了浮动体，要求排版到底部，
 所以文本反而显示在了图表上面。
 
-=== 图表目录
+=== 图表标题
+
+图表标题默认会显示在图表内容下面。
+如果想要修改图表标题的位置，可以设置 `figure.caption` 的参数 `position`：
+
+#code-block[
+  ```typ
+  #show figure.where(kind: table): set figure.caption(position: top)
+  #figure(kind: table, caption: [图表标题测试], numbering: none)[
+    #table(columns: (2em, 2em), rows: (2em, 2em),
+      align: center + horizon,
+      [A], [B],
+      [C], [D],
+    )
+  ]
+  ```
+]
+
+#show-block(width: auto)[
+  #show figure.where(kind: table): set figure.caption(position: top)
+  #figure(kind: table, caption: [图表标题测试], numbering: none)[
+    #table(
+      columns: (2em, 2em),
+      rows: (2em, 2em),
+      align: center + horizon,
+      [A], [B],
+      [C], [D],
+    )
+  ]
+]
 
 在 @ch-3-目录 中提到 `outline` 函数的参数 `target` 可以用于筛选目录要显示的内容。
+而图表的参数 `kind` 可以接受一个字符串，这意味着我们可以自定义图表，
+并使用目录列出所有自定义图表的位置。
+
+例如自定义一个图表专门显示猫猫相关的内容：
+
+#code-card[
+  ```typ
+  // 设置专门的图表标识
+  #show figure.where(kind: "猫猫"): set figure(supplement: [🐱])
+  // 使用参数 target 让目录显示自定义图表的条目
+  #outline(target: figure.where(kind: "猫猫"), title: [猫猫目录])
+  // 使用自定义图表
+  #figure(kind: "猫猫", caption: [🐱👌👨👎])[
+    #image("猫猫图片.png", format: "png", width: 64%)
+  ]
+  ```
+]
+
+=== 并列和子图表
+
+如果要并列两个图表，可以使用 `grid` 函数。
+如果只需要均匀分成特定列数，可以使用 `columns` 函数。
+例如使用 `grid` 函数并列显示两个图表：
+
+#code-block[
+  ```typ
+  #grid(columns: (1fr, 1fr), align: center + horizon)[
+    #figure(kind: image, caption: [_A square_])[
+      #block(width: 8em, height: 8em, fill: blue.lighten(32%))
+    ]
+  ][
+    #figure(kind: image, caption: [_Another square_])[
+      #block(width: 8em, height: 8em, fill: green.lighten(32%))
+    ]
+  ]
+  ```
+]
+
+#show-block(width: auto)[
+  #grid(columns: (1fr, 1fr), align: center + horizon)[
+    #figure(kind: image, caption: [_A square_])[
+      #block(width: 8em, height: 8em, fill: blue.lighten(32%))
+    ]
+  ][
+    #figure(kind: image, caption: [_Another square_])[
+      #block(width: 8em, height: 8em, fill: green.lighten(32%))
+    ]
+  ]
+]
+
+如果要让这两个图表归属同一个图表下，就需要用到子图表功能了。
+Typst *并没有*提供子图表函数，但是我们可以使用自定义计数器和自定义图表实现这个功能：
+
+#figure(kind: raw, caption: [在 Typst 中自定义子图片图表源代码示例。])[
+  #code-block[
+    ```typ
+    // 设置图片编号为 1.1
+    #show figure.where(kind: image): set figure(numbering: it => {
+      // 每次使用图片图表都重置子图片图表计数，从 0 开始
+      counter(figure.where(kind: "subimage")).update(0)
+      // 设置编号方式
+      numbering("1.1",
+        counter(heading.where(level: 1)).get().at(0), it)
+    })
+    // 设置子图片图表的图表标识
+    #show figure.where(kind: "subimage"): set figure(supplement: [图])
+    // 设置子图片图表的编号为 1.1.a
+    #show figure.where(kind: "subimage"): set figure(
+      numbering: it => {
+        numbering(
+          "1.1.a",
+          counter(heading.where(level: 1)).get().at(0),
+          counter(figure.where(kind: image)).get().at(0),
+          it,
+        )
+      })
+    // 使用图表
+    #figure(kind: image, caption: [演示自定义子图片图表。])[
+      // 使用 grid 函数控制布局
+      #grid(columns: (1fr, 1fr), align: center + horizon)[
+        #figure(kind: "subimage", caption: [_A square_])[
+          #block(width: 8em, height: 8em, fill: blue.lighten(32%))
+        ]<test-subimage-a>
+      ][
+        #figure(kind: "subimage", caption: [_Another square_])[
+          #block(width: 8em, height: 8em, fill: green.lighten(32%))
+        ]<test-subimage-b>
+      ]
+    ]
+    ```
+  ]
+]
+
+#show-block[
+  // 设置图片编号为 1.1
+  #show figure.where(kind: image): set figure(numbering: it => {
+    // 每次使用图片图表都重置子图片图表计数，从 0 开始
+    counter(figure.where(kind: "subimage")).update(0)
+    // 设置编号方式
+    numbering(
+      "1.1",
+      counter(heading.where(level: 1)).get().at(0),
+      it,
+    )
+  })
+  // 设置子图片图表的图表标识
+  #show figure.where(kind: "subimage"): set figure(supplement: [图])
+  // 设置子图片图表的编号为 1.1.a
+  #show figure.where(kind: "subimage"): set figure(numbering: it => {
+    numbering(
+      "1.1.a",
+      counter(heading.where(level: 1)).get().at(0),
+      counter(figure.where(kind: image)).get().at(0),
+      it,
+    )
+  })
+  // 使用图表
+  #figure(kind: image, caption: [演示自定义子图片图表。])[
+    // 使用 grid 函数控制布局
+    #grid(columns: (1fr, 1fr), align: center + horizon)[
+      #figure(kind: "subimage", caption: [_A square_])[
+        #block(width: 8em, height: 8em, fill: blue.lighten(32%))
+      ]<test-subimage-a>
+    ][
+      #figure(kind: "subimage", caption: [_Another square_])[
+        #block(width: 8em, height: 8em, fill: green.lighten(32%))
+      ]<test-subimage-b>
+    ]
+  ]
+]
+
+引用功能也是可以正常使用的，例如 @test-subimage-a 和 @test-subimage-b。

@@ -4,8 +4,8 @@
   text(size: 0.96em, weight: "semibold", font: "Sarasa Gothic SC")[
     // 内容居中
     #align(center)[
-      // 内容宽度限定在 64%
-      #block(width: 64%)[
+      // 内容宽度限定在 80%
+      #block(width: 80%)[
         // 文本左对齐
         #align(left)[
           #body
