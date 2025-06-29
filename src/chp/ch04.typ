@@ -56,7 +56,7 @@
 ]
 
 
-=== 数学模式
+=== 数学模式<ch-3-数学模式>
 
 数学模式与标记模式相比，有以下特点：
 
@@ -175,7 +175,8 @@ Typst 常见的关系符号大部分可以直接输入，例如 $>$、$<$ 以及
 其实，一些常见的函数也是算符，例如 $lim$（```typm lim```）和 $cos$（```typm cos```）。
 所有预先定义的文本算符可以参考
 #link("https://typst.app/docs/reference/math/op/#predefined")[预定义算符]。
-其中，有些算符可以像 $integral$ 一样在符号顶部和底部附带内容，这些算符被称为巨算符（big operator）。
+其中，有些算符可以像 $integral$ 一样在符号顶部和底部附带内容，
+这些算符被称为巨算符（big/large operator）。
 
 如果需要自定义文本算符，可以使用 ```tyom op``` 函数：
 
@@ -230,14 +231,14 @@ Typst 还能为多个字符加重音，重音符号会自动扩展：
 
 #code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
   $
-    underbrace(1 + 2 + ... + 5, "numbers") \
     overbrace(1 + 2 + ... + 5, "numbers") \
-    underbracket(1 + 2 + ... + 5, "numbers") \
+    underbrace(1 + 2 + ... + 5, "numbers") \
     overbracket(1 + 2 + ... + 5, "numbers") \
-    underparen(1 + 2 + ... + 5, "numbers") \
+    underbracket(1 + 2 + ... + 5, "numbers") \
     overparen(1 + 2 + ... + 5, "numbers") \
-    undershell(1 + 2 + ... + 5, "numbers") \
-    overshell(1 + 2 + ... + 5, "numbers")
+    underparen(1 + 2 + ... + 5, "numbers") \
+    overshell(1 + 2 + ... + 5, "numbers") \
+    undershell(1 + 2 + ... + 5, "numbers")
   $
   ```]
 
@@ -254,7 +255,7 @@ Typst 还能为多个字符加重音，重音符号会自动扩展：
   $
   ```]
 
-使用 ```typm stretch``` 函数时，不是所有的符号都能拉伸，例如：
+需要注意的是，```typm stretch``` 函数不是所有的符号都能拉伸，例如：
 
 #code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
   $
@@ -262,6 +263,198 @@ Typst 还能为多个字符加重音，重音符号会自动扩展：
   $
   ```]
 
-=== 括号和界定符
+=== 分类
+
+在 Typst 中，符号被分成了许多类别，这些类别决定了这些符号该怎么被渲染。
+
+#grid(columns: 2, inset: 0.8em)[
+  / normal: 默认符号类别。
+][
+  / large: 巨算符，例如 ```typm sum```。
+][
+  / punctuation: 标点符号，例如逗号。
+][
+  / relation: 关系算符，例如 ```typm prec```。
+][
+  / opening: 开始分隔符，例如 ```typm (```。
+][
+  / unary: 一元算符，例如 ```typm not```。
+][
+  / closing: 结束分隔符，例如 ```typm )```。
+][
+  / binary: 二元算符，例如 ```typm div```。
+][
+  / fence: 中间分隔符，例如 ```typm |```。
+][
+  / vary: 一元或二元算符，例如 ```typm +```。
+]
+
+如果要明确标注某个符号的分类，可以使用 `math.class` 函数，例如：
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  #let loves = math.class(
+    "relation",
+    sym.suit.heart,
+  )
+
+  $x loves y and y loves 5$
+  ```]
+
+=== 分隔符
+
+公式块的边界可以由分隔符表示，包括 `"opening"`、`"closing"` 以及 `"fence"`。
+
+通常情况下，成对的分隔符会自动根据内容缩放，
+但是我们也可以使用 ```typm lr``` 函数来匹配任意分隔符并精确控制其大小。
+
+#code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
+  $
+    (1 + 1 / (1 - x^2))^3 \
+    lr((partial f) / (partial t) |)_(t = 0)
+    quad quad lr(]sum_(x=1)^n], size: #50%) x \
+  $
+  ```]
+
+其中，参数 `size` 的默认值是 `100%+0pt`，可以设置为任意相对长度。
+
+对于 `"fence"`，作为中间分隔符时可能需要使用 `mid` 函数让分隔符大小匹配。
+
+#code-and-show(code-func: code-card, columns: (5fr, 2fr))[```typ
+  $
+    { x | sum_(i=1)^n w_i|f_i (x)| < 1 } \
+    { x mid(|) sum_(i=1)^n w_i|f_i (x)| < 1 }
+  $
+  ```]
+
+
+当然，对于常见的括号和分隔符，可以使用对应的函数：
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  $
+    abs(-1) = 1 \
+    norm(vec(delim: \[, 1, 2)) = sqrt(5) \
+    floor(3.7) = 3 \
+    ceil(3.2) = 4 \
+    round(3.5) = 4 \
+  $
+  ```]
+
+== 多行公式
+
+通常来讲应当避免写出超过一行而需要折行的长公式。
+如果一定要折行的话，习惯上优先在等号之前折行，
+其次在加号、减号之前。其它位置应当避免折行。
+
+#code-and-show(code-func: code-card, columns: (5fr, 4fr))[```typ
+  $
+    a + b + c + d + e + f + g + h + i \
+    = j + k + l + m + n \
+    = o + p + q + r + s
+  $
+  ```]
+
+=== 公式对齐
+
+默认多行公式会使用中间对齐的方式显示：
+
+#code-and-show(code-func: code-card, columns: (1fr, 1fr))[```typ
+  $
+    a + b + c = d + e + f \
+    g + h + i = j + k \
+    l + m = o + p + q
+  $
+  ```]
+
+通常情况下，多行公式会对齐等号，那么可以使用 `&`：
+
+#code-and-show(code-func: code-card, columns: (1fr, 1fr))[```typ
+  $
+    a + b + c & = d + e & + f \
+    g + h + i & = j & + k \
+    l + m & = o + p + q
+  $
+  ```]
+
+如果有多个对齐点，公式会自动添加间距来实现对齐。
+这里，由于第三行只有一个对齐点，那么第一行和第二行的加号会与第三行的末尾对齐。
+
+=== 公式编号
+
+Typst 目前还*不支持*对行间公式的任意一行公式编号。
+如果要编号的公式间不需要对齐，可以将公式分别放置在不同的行间公式中。
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  #lorem(16)
+
+  #math.equation(block: true, numbering: "(A)")[$
+      E = m upright(c)^2
+    $]<test-multi-eq-1>
+  #math.equation(block: true, numbering: "(A)",
+    number-align: bottom)[$
+      F &= m a \
+        &= (dif p) / (dif t)
+    $]<test-multi-eq-2>
+
+  @test-multi-eq-1
+  and @test-multi-eq-2
+  ```]
+
+如果需要对齐，则可以尝试使用 #link("https://typst.app/universe/package/equate")[equate]。
+
+== 向量和矩阵
+
+Typst 中提供了排版向量和矩阵的函数，即 ```typm vec``` 和 ```typm mat```。
+
+#code-and-show(code-func: code-card)[```typ
+  $
+    vec(x, y, z) quad
+    mat(1, 2; 3, 4)
+  $
+  ```]
+
+向量和矩阵默认使用圆括号作为分隔符，并且矩阵每一行的元素使用分号 `;` 隔开。
+如果想要修改向量和矩阵的括号，可以设置参数 `delim`：
+
+#code-and-show(code-func: code-card, columns: (5fr, 3fr))[```typ
+  $
+    vec(delim: #"[", x, y, z) quad
+    mat(delim: #"|", 1, 2; 3, 4)
+  $
+  ```]
+
+只需要提供一半的分隔符，Typst 会自动匹配对应的分隔符。
+
+如果向量或者矩阵包含分式，此时需要对分式使用 ```typm display``` 函数让内容以行间公式形式显示。
+并且可以使用参数 `gap` 来调整元素之间的距离；
+对于矩阵的行列间距，可使用参数 `row-gap` 和 `column-gap` 调整。
+
+#code-and-show(columns: (5fr, 2fr))[```typ
+  $
+    upright(bold(H)) = mat(
+      gap: #0.64em, delim: #"[",
+      display((partial^2 f) / (partial x^2)),
+      display((partial^2 f) / (partial x y));
+      display((partial^2 f) / (partial x y)),
+      display((partial^2 f) / (partial y^2));
+    )
+  $
+  ```]
+
+另外，对于分段函数，Typst 也提供了 `cases` 函数方便展示：
+
+#code-and-show(columns: (5fr, 3fr))[```typ
+  $
+    abs(x) stretch(=)^#[def] cases(
+      -x quad & "if" x < 0,
+      0 quad & "if" x = 0,
+      x quad & "otherwise")
+  $
+  ```]
+
+其中，`cases` 函数也支持设置参数 `delim` 来修改分隔符，默认使用花括号。
+
+== 数学符号的字体控制
+
+=== 数学字母字体
 
 TODO
