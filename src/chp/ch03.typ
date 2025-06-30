@@ -9,7 +9,7 @@
 
 == 章节和目录
 
-=== 章节标题
+=== 章节标题<ch-3-章节标题>
 
 一篇结构化的、条理清晰文档一定是层次分明的。
 Typst 通过 `heading` 函数，
@@ -94,7 +94,7 @@ Typst 理论上支持任意深度的标题层级，
 
 === 目录<ch-3-目录>
 
-在 Typst 中生成目录非常容易，只需在合适的地方使用 `#outline()` 函数。
+在 Typst 中生成目录非常容易，只需在合适的地方使用 `outline` 函数。
 
 这个函数会单独的一章，标题使用一级标题，并且标题内容会根据使用的语言自动选择，
 例如英语会使用 `Contents`，而中文会使用 `目录`。
@@ -351,6 +351,9 @@ PDF 文档除了文档内容，还包含许多元数据#footnote[
 
 有时我们想要为一些内容添加注释，但是又不想影响正文布局。
 此时可以使用脚注来为内容添加注释。
+LaTeX 中，还有宏包提供了边注以及其他注释方法，
+Typst 目前仅支持使用脚注，并且还缺少很多功能，
+详情请查看#link("https://github.com/typst/typst/issues/1337")[typst/issues/1337]。
 
 使用 `footnote` 函数可以在页面底部生成一个脚注：
 
@@ -358,9 +361,7 @@ PDF 文档除了文档内容，还包含许多元数据#footnote[
   ```typ
   #text(font: "Zhuque Fangsong (technical preview)")[
     “天地玄黄，宇宙洪荒。日月盈昃，辰宿列张。”
-    #footnote[
-      出自《千字文》。
-    ]
+    #footnote[出自《千字文》。]
   ]
   ```
 ]
@@ -399,23 +400,27 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
 这两个函数的用法十分类似，使用位置参数标明每个列表项。
 `enum` 函数会自动对列表项编号。
 
-#code-and-show[```typ
-  #enum(numbering: "1.")[
-    参数一
-  ][
-    参数二
-  ][
-    参数三
-  ]
+#code-and-show(columns: (5fr, 4fr))[```typ
+  #set enum(numbering: "1.a.")
+  #enum(
+    [参数一],
+    [ 参数二
+      #enum(
+        [参数A],
+        [参数B],
+      )
+    ],
+  )
   ```]
 
 还可以使用标记语法 `+` 和 `-` 表示有序和无序列表：
 
-#code-and-show[```typ
-  #set enum(numbering: "1.")
+#code-and-show(columns: (5fr, 4fr))[```typ
+  #set enum(numbering: "1.a.")
   + 参数一
   + 参数二
-  + 参数三
+    + 参数A
+    + 参数B
   ```]
 
 列表间可以相互嵌套，每一层级的编号，
@@ -639,7 +644,7 @@ Typst 提供了基本的有序列表 `enum` 函数和无序列表 `list` 函数�
       // 如果显示行号，则使用 grid 排版
       grid(
         // 行号右对齐，代码左对齐，水平居中
-        align: (right + horizon, left + horizon),
+        align: (right + top, left + horizon),
         // 行号宽度自动，代码内容占据所有剩下的空间
         columns: (auto, 1fr),
         // 行间距设置为 0.64em
@@ -991,9 +996,12 @@ Typst 支持插入 `.png`、`.jpg`、`.gif` 和 `.svg` 格式的图片。
 / alt: 图片的描述文本，是一个字符串。
 
 / fit: 图片的调整策略，如果剩余空间不足以显示图像该如何调整图片。目前的策略有：
+
   / cover: 覆盖，或者说裁剪。
 
     图片比例不变，尽可能覆盖剩余空间，超出部分被舍弃。
+
+    参数 `fit` 的默认值就是 `"cover"`。
 
   / contain: 包含。
 
@@ -1195,16 +1203,16 @@ Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建�
 排版文档时，经常能遇到许多图片和表格等内容，有些内容的尺寸往往太大而导致分页困难。
 使用浮动体让大块的内容可以脱离上下文，放置在合适的位置。
 
-要使用浮动体，可以使用 `figure` 函数，使用参数 `kind` 可以说明图表内容的类别。
-图表默认是不浮动的。
-如果要让图表变成浮动体，可以设置参数 `placement` 为 `auto`、`top` 或者 `bottom`，
+`figure` 函数用于显示需要编号和标题的内容，一般用于排版图表。
+参数 `kind` 可以说明图表内容的类别。
+图表默认不是浮动体。
+如果想要让图表变成浮动体，可以设置参数 `placement` 为 `auto`、`top` 或者 `bottom`，
 默认值是 `none`。例如：
 
 #code-card[
   ```typ
   #figure(caption: [_A example of gradient_],
-    placement: bottom,
-    kind: image, numbering: none,
+    placement: bottom, kind: image, numbering: none,
   )[
     #block(width: 12em, height: 12em, radius: 6em, fill: gradient
       .radial(..color.map.rocket)
@@ -1214,7 +1222,9 @@ Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建�
   ```
 ]
 
-参数 `caption` 可用于为图表添加标题。
+参数 `caption` 用于为图表添加标题；
+对于多列布局，如果想要让图表可以跨列显示，
+可以让图表变成浮动体的同时，设置参数 `scope` 为 `"parent"`。
 
 #show-block[
   #figure(placement: bottom, caption: [_An example of gradient_], numbering: none, kind: image)[
@@ -1352,7 +1362,7 @@ Typst *并没有*提供子图表函数，但是我们可以使用自定义计数
     ]
     ```
   ]
-]
+]<自定义子图片图表示例>
 
 #show-block[
   // 设置图片编号为 1.1

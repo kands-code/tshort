@@ -85,7 +85,7 @@
           // 如果显示行号，则使用 grid 排版
           grid(
             // 行号右对齐，代码左对齐，水平居中
-            align: (right + horizon, left + horizon),
+            align: (right + top, left + horizon),
             // 行号宽度自动，代码内容占据所有剩下的空间
             columns: (
               auto,

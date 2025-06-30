@@ -463,9 +463,7 @@ Typst 提供了 ```typc include``` 用于在源代码里插入文件：
 
 #code-card[```typ #include "other.typ"```]
 
-`"other.typ"` 需要替换成要引入的文件名称。
-如果和当前文件不在同一个目录，
-则要加上相对或绝对路径，例如：
+`"other.typ"` 需要替换成要引入的文件名称，例如：
 
 #code-block[
   ```typ

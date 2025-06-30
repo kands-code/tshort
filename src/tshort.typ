@@ -52,13 +52,15 @@
     numbering("a.", num)
   }
 })
-// 设置 figure 的上下外间距
+// 设置所有 figure 的上下外间距
 #show figure: set block(
   above: 2em,
   below: 2em,
   // 让 figure 可以跨页面
   breakable: true,
 )
+// 设置表格图表的标题位置
+#show figure.where(kind: table): set figure.caption(position: top)
 // 设置链接和引用的的文本颜色
 #show link: set text(fill: rgb(87, 123, 193))
 #show ref: set text(fill: rgb(52, 76, 183))
@@ -90,7 +92,7 @@
     // 设置标题字体大小为 1.28em
     #text(size: 1.28em)[
       // 设置上外边距为 3.2em，下外边距为 1.6em
-      #block(above: 2.4em, below: 1.6em)[
+      #block(above: 2em, below: 1.2em)[
         #if it.numbering == none [
           // 对于没有编号的标题，只显示标题内容
           #it.body
@@ -105,7 +107,7 @@
   // 对于三级标题，设置标题字体大小为 1.2em
   text(size: 1.2em)[
     // 设置上外边距为 1.6em，下外边距为 1.2em
-    #block(above: 1.6em, below: 1.2em)[
+    #block(above: 2em, below: 1.2em)[
       //! 二级以下的标题一定有编号，所以按照有编号的格式显示
       #counter(heading).display(it.numbering)#h(1em)#it.body
     ]
@@ -277,34 +279,53 @@
     // 每一层级缩进 1.6em
     indent: 1.6em,
   )
+
+  // 设置源码目录条目间距
+  #show figure.where(kind: "outline"): set block(below: 1em)
+  // 使用浮动体确保源码目录显示在目录同一页的底部
+  #figure(
+    caption: none,
+    gap: 0em,
+    kind: "outline",
+    numbering: none,
+    outlined: false,
+    placement: bottom,
+    scope: "parent",
+    supplement: none,
+  )[
+    // 手动设置上外边距
+    #v(3.2em)
+    // 源码目录列表使用二级标题来符合格式要求
+    // 设置 outlined: false 来隐藏标题
+    #heading(level: 2, outlined: false)[源代码示例列表]
+    // 设置源码列表目录
+    #show outline.where(target: figure.where(kind: raw)): it => {
+      // 恢复默认间隔填充
+      show outline.entry: set outline.entry(fill: repeat(sym.dot, gap: 0.15em))
+      // 使用常规字重
+      show outline.entry: set text(weight: "regular", fill: rgb(37, 77, 112))
+      it
+    }
+    #outline(
+      title: none,
+      // 列出所有的种类为 raw 的 figure 来生成目录
+      target: figure.where(kind: raw),
+    )
+  ]
 ]
-// 源码目录列表使用二级标题来符合格式要求
-// 设置 outlined: false 来隐藏标题
-#heading(level: 2, outlined: false)[源代码示例列表]
-// 设置源码列表目录
-#show outline.where(target: figure.where(kind: raw)): it => {
-  // 恢复默认间隔填充
-  show outline.entry: set outline.entry(fill: repeat(sym.dot, gap: 0.15em))
-  // 使用常规字重
-  show outline.entry: set text(weight: "regular", fill: rgb(37, 77, 112))
-  it
-}
-#outline(
-  title: none,
-  // 列出所有的种类为 raw 的 figure 来生成目录
-  target: figure.where(kind: raw),
-)
+
 #insert-page()
 
 // ---------
 //  正文部分
 // ---------
 
+
 // 设置正文格式
 // 正文一级标题编号使用 <第x章> 的格式
-#show heading.where(level: 1): set heading(numbering: "第一章")
+#show heading.where(level: 1): set heading(numbering: "第一章", supplement: [章节])
 // 最多三级标题，第二和第三级标题使用 <x.x.x> 的格式
-#set heading(numbering: "1.1.1")
+#set heading(numbering: "1.1.1", supplement: [小节])
 // 设置正文的页面格式
 #set page(
   // 页码使用阿拉伯数字格式
@@ -413,6 +434,9 @@
 #insert-page()
 // 第四章内容
 #include "chp/ch04.typ"
+#insert-page()
+// 第五章内容
+#include "chp/ch05.typ"
 #insert-page()
 
 // ---------
