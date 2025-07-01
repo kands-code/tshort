@@ -480,7 +480,7 @@ Typst 允许一部分数学符号切换字体，主要是拉丁字母、数字�
 但是目前 Typst 对于数学文本样式处理还有许多限制，所以这里的 `box` 函数是必要的。
 
 #code-block[
-  ```typst
+  ```typ
   #let scr(it) = text(features: ("ss01",), box($cal(it)$))
   $
     cal(B) quad frak(B) quad
@@ -576,7 +576,7 @@ Typst 为每个数学尺寸指定了一个切换的函数。
 Typst *并没有*提供排版定理以及证明的函数，
 但是我们可以使用 @自定义子图片图表示例 的方法来自定义定理内容的排版：
 
-#figure(kind: raw, caption: [在 Typst 中自定义定理排版源代码示例])[
+#figure(kind: raw, caption: [在 Typst 中自定义定理排版源代码示例。])[
   #code-block[```typ
     #show figure.where(kind: "theroem"): set figure(
       numbering: "1", supplement: [定理],

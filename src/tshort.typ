@@ -169,36 +169,38 @@
     // 检查当前页面是否包含一级标题，即是否是每一章第一页
     if current_page in positions {
       // 如果是，则不显示页眉
-      []
+      none
     } else {
       // 否则，显示页眉
-      align(center + bottom)[
+      align(
+        center + bottom,
         // 页眉内容为粗体显示
-        #text(weight: "bold")[
-          #if calc.even(current_page) [
-            // 如果当前页面是偶数，
-            // 则按照 <页码 间隔 标题> 的格式显示页眉
-            #counter(page).display()#h(1fr)前言
-          ] else [
-            // 如果是奇数，
-            // 则按照 <标题 间隔 页码> 的格式显示页眉
-            前言#h(1fr)#counter(page).display()
-          ]
-        ]
-        // 收缩内容与分割线间隔，调整具体样式
-        #v(-0.48em)
-        // 自己绘制分割线
-        #line(length: 100%, stroke: 0.64pt + black)
-      ]
+        text(weight: "bold", if calc.even(current_page) [
+          // 如果当前页面是偶数，
+          // 则按照 <页码 间隔 标题> 的格式显示页眉
+          #counter(page).display()#h(1fr)前言
+        ] else [
+          // 如果是奇数，
+          // 则按照 <标题 间隔 页码> 的格式显示页眉
+          前言#h(1fr)#counter(page).display()
+        ])
+          + v(-0.48em) // 收缩内容与分割线间隔，调整具体样式
+          + line(length: 100%, stroke: 0.64pt + black), // 自己绘制分割线
+      )
     }
   },
   footer: context {
-    // 获取所有一级标题的位置
-    let positions = query(heading.where(level: 1)).map(it => it.location().page())
-    // 获取当前页面的实际位置
-    let current_page = here().page()
+    // 获取当前页码
+    let current-page = here().page()
     // 检查当前页面是否有一级标题
-    if current_page in positions {
+    if (
+      current-page
+        == query(heading.where(level: 1))
+          .filter(it => it.location().page() <= current-page)
+          .last()
+          .location()
+          .page()
+    ) {
       // 如果是章节首页，则显示页码作为页脚
       align(center + top)[
         #text(weight: "semibold")[
@@ -207,7 +209,7 @@
       ]
     } else {
       // 否则不显示页脚
-      []
+      none
     }
   },
 )
@@ -242,22 +244,21 @@
   // 检查当前页面是否是章节首页
   if current_page in positions {
     // 如果是则不显示页眉
-    []
+    none
   } else {
     // 否则显示页眉
-    align(center + bottom)[
-      #text(weight: "bold")[
-        #if calc.even(current_page) [
-          // 格式为偶数 <页码 间隔 标题>
-          #counter(page).display()#h(1fr)目录
-        ] else [
-          // 奇数页眉为 <标题 间隔 页码>
-          目录#h(1fr)#counter(page).display()
-        ]
-      ]
-      #v(-0.48em)
-      #line(length: 100%, stroke: 0.64pt + black)
-    ]
+    align(
+      center + bottom,
+      text(weight: "bold", if calc.even(current_page) [
+        // 格式为偶数 <页码 间隔 标题>
+        #counter(page).display()#h(1fr)目录
+      ] else [
+        // 奇数页眉为 <标题 间隔 页码>
+        目录#h(1fr)#counter(page).display()
+      ])
+        + v(-0.48em)
+        + line(length: 100%, stroke: 0.64pt + black),
+    )
   }
 })
 
@@ -331,95 +332,54 @@
   // 页码使用阿拉伯数字格式
   numbering: "1",
   // 设置页眉格式
-  header: context {
-    // 获取所有的一级标题
-    let level1_headings = query(heading.where(level: 1))
-    // 获取所有一级标题的位置
-    let positions = level1_headings.map(it => it.location().page())
-    // 获取当前页面的实际页码
-    let current_page = here().page()
-    // 测试当前页面是否是章节首页
-    if current_page in positions {
-      // 如果是则不显示页眉
-      []
+  header: align(center + bottom, context {
+    let current-page = here().page()
+    let title = query(heading.where(level: 1))
+      .filter(it => it.location().page() <= current-page)
+      .last()
+    if title.location().page() == current-page {
+      none // 如果当前页面有一级标题，不显示页眉
     } else {
-      // 否则显示页眉
-      align(center + bottom)[
-        #text(weight: "bold")[
-          #if calc.even(current_page) {
-            // 获取当前页面所属一级标题编号和内容
-            let level1_heading_title = level1_headings
-              .filter(it => it.location().page() <= current_page)
-              .map(it => (counter(heading).get().first(), it.body))
-              .rev()
-              .first()
-            // 对于偶数页面，
-            // 页眉格式为 <页码 间隔 一级标题>
-            (
-              counter(page).display()
-                + h(1fr)
-                + [
-                  #numbering("第一章", level1_heading_title.first())#h(
-                    1em,
-                  )#level1_heading_title.at(1)
-                ]
-            )
-          } else {
-            // 获取最近的二级标题
-            let level2_heading = query(heading.where(level: 2))
-              .map(it => (
-                str(it.location().page()),
-                (it.location(), it), // 保留标题的 location 信息
-              )) // 将页码由整数转为字符串
-              .fold((:), (acc, e) => {
-                if acc.at(e.at(0), default: none) == none {
-                  // 如果该页码不在字典中，插入新值
-                  acc.insert(e.at(0), (e.at(1),))
-                } else {
-                  // 如果已经存在，先获取现在的值
-                  let entry = acc.at(e.at(0))
-                  // 将当前标题插入
-                  entry.push(e.at(1))
-                  // 更新字典
-                  acc.insert(e.at(0), entry)
-                }
-                // 返回更新后的字典
-                acc
-              }) // 将页码和标题收集为字典
-              .pairs() // 将字典转为列表
-              .map(((l2_page, l2_heading)) => (
-                int(l2_page),
-                l2_heading,
-              )) // 将页码恢复为整数
-              .filter(((l2_page, _)) => l2_page <= current_page)
-              .last() // 获取最接近的二级标题
-            // 检查标题位置
-            let level2_heading_title = if level2_heading.at(0) == current_page {
-              // 如果当前页面正好有二级标题，使用第一个标题
-              level2_heading.at(1).first()
-            } else {
-              // 如果当前页面没有二级标题，则使用最后一个标题
-              level2_heading.at(1).last()
-            }
-            // 对于奇数页面，
-            // 页眉格式为 <二级标题 间隔 页码>
-            (
-              // 通过 location 定位获取真实的 counter(heading)，
-              // 然后格式化显示
-              sym.section
-                + numbering("1.1", ..counter(heading).at(level2_heading_title.at(0)))
-                + h(1em) // 编号与标题内容间隔 1em
-                + level2_heading_title.at(1).body // 标题内容
-                + h(1fr) // 间隔
-                + counter(page).display() // 页码
-            )
-          }
-        ]
-        #v(-0.48em)
-        #line(length: 100%, stroke: 0.64pt + black)
-      ]
+      if calc.even(current-page) {
+        let section-index = counter(heading.where(level: 1)).get().at(0)
+        // 对于偶数页，显示格式为 <页码 间隔 章节标题>
+        text(
+          weight: "bold",
+          counter(page).display()
+            + h(1fr)
+            + numbering("第一章", section-index)
+            + h(1em)
+            + title.body,
+        )
+      } else {
+        // 对于奇数页，格式为 <二级标题 间隔 页码>
+        let level2-titles = query(heading.where(level: 2)).filter(it => (
+          it.location().page() <= current-page
+            and it.location().page() >= title.location().page()
+        ))
+        let current-page-title = level2-titles.filter(it => (
+          it.location().page() == current-page
+        ))
+        let (first, second, ..) = counter(heading).get()
+        let level2-title = if current-page-title == () {
+          level2-titles.last()
+        } else {
+          second += 1
+          current-page-title.first()
+        }
+        text(
+          weight: "bold",
+          sym.section
+            + numbering("1.1", first, second)
+            + h(1em)
+            + level2-title.body
+            + h(1fr)
+            + counter(page).display(),
+        )
+      }
+      v(-0.48em) + line(length: 100%, stroke: 0.64pt + black)
     }
-  },
+  }),
 )
 // 设置当前页面为逻辑第一页
 #counter(page).update(1)
@@ -437,6 +397,9 @@
 #insert-page()
 // 第五章内容
 #include "chp/ch05.typ"
+#insert-page()
+// 第六章内容
+#include "chp/ch06.typ"
 #insert-page()
 
 // ---------
@@ -470,22 +433,21 @@
   // 检查当前页面是否是章节首页
   if current_page in positions {
     // 如果是则不显示页眉
-    []
+    none
   } else {
     // 否则显示页眉
-    align(center + bottom)[
-      #text(weight: "bold")[
-        #if calc.even(current_page) [
-          // 格式为偶数 <页码 间隔 标题>
-          #counter(page).display()#h(1fr)参考文献
-        ] else [
-          // 奇数页眉为 <间隔 页码>
-          #h(1fr)#counter(page).display()
-        ]
-      ]
-      #v(-0.48em)
-      #line(length: 100%, stroke: 0.64pt + black)
-    ]
+    align(
+      center + bottom,
+      text(weight: "bold", if calc.even(current_page) [
+        // 格式为偶数 <页码 间隔 标题>
+        #counter(page).display()#h(1fr)参考文献
+      ] else [
+        // 奇数页眉为 <间隔 页码>
+        #h(1fr)#counter(page).display()
+      ])
+        + v(-0.48em)
+        + line(length: 100%, stroke: 0.64pt + black),
+    )
   }
 })
 
