@@ -13,20 +13,38 @@
 
 === GitHub Release
 
-可以前往 Typst 在 GitHub 上的#link("https://github.com/typst/typst/releases")[Releases 页面]。
-根据当前操作系统选择最新版本的压缩包。
-下载压缩包后，可以解压到任何你要想要存放 Typst 可执行文件的目录。
-最后，还需要将解压目录添加到系统的环境变量 `PATH`。
+通过 GitHub Release 安装 Typst 有大致一下几个步骤：
+
+/ 访问发布页面: 前往 Typst 在 GitHub 上的 #link("https://github.com/typst/typst/releases")[Releases 页面]。
+
+/ 下载压缩包: 根据当前使用的操作系统，选择并下载最新版本的压缩包。
+
+/ 解压文件: 下载完成后，可以解压到任何你要想要存放 Typst 可执行文件的目录。
+
+/ 配置环境变量（可选）: 要在命令行中直接运行 `typst` 命令，
+  需要将包含 Typst 可执行文件的目录添加到系统的环境变量 `PATH`。
+
+  对于类 Unix 系统：
+
+  #code-card[
+    ```sh
+    export PATH="/path/to/typst":"$PATH"
+    ```
+  ]
 
 === 包管理器
 
 许多操作系统都提供了包管理器，可以简化软件的安装和更新过程：
 
-/ Windows: 在命令行执行：```sh winget install Typst.Typst```。
+/ Windows: 使用 `winget`，在命令行执行：```sh winget install Typst.Typst```。
 
 / macOS: 如果配置好了 #link("https://brew.sh/")[Homebrew]，可以在终端执行：```sh brew install typst```。
 
-/ ArchLinux: 在终端执行：```sh sudo pacman -S typst```。
+/ ArchLinux: 使用 `pacman`，在终端执行：```sh sudo pacman -S typst```。
+
+/ openSUSE: 使用 `zypper`，在终端执行：```sh sudo zypper install typst```。
+
+其他系统可使用对应包管理器安装，部分发行版可能需要使用社区源。
 
 === 手动编译安装
 
@@ -53,11 +71,8 @@
     let subs = eval("script(" + body + ")", mode: "math")
     context place(bottom, float: true,
       scope: "parent", clearance: 0em,
-      dy: -measure(subs).height / 2,
-      subs,
-    )
+      dy: -measure(subs).height / 2, subs)
   }
-
   $
     #[默认：]lr((partial f) / (partial t) |)^(y = 12)_(t = 0) quad
     #[现在：]lr((partial f) / (partial t) |)^(y = 12)_#lspt("t = 0")
@@ -88,7 +103,7 @@
 
 在 @ch-3-目录 中提到，通过参数 `target` 能得到对应目录。
 如果把目录变成浮动体或者使用 `figure` 函数包裹，
-如果设置过图表上下间隔，就会影响目录的间隔：
+并且设置过图表上下间隔，就会影响目录的间隔：
 
 #code-block[
   ```typ
@@ -96,7 +111,6 @@
   #show figure: set block(below: auto)
   // 设置测试图表
   #show figure.where(kind: "test"): set figure(supplement: [T])
-  #figure(kind: "test")[]
   #figure(kind: "test")[]
   #figure(kind: "test")[]
   // 对比目录
@@ -116,17 +130,15 @@
 #show-block(width: auto)[
   // 恢复 figure 的下外间距
   #show figure: set block(below: auto)
-
+  // 设置测试图表
   #show figure.where(kind: "test"): set figure(supplement: [T])
   #figure(kind: "test")[]
   #figure(kind: "test")[]
-  #figure(kind: "test")[]
-
+  // 对比目录
   #figure[
     *正常目录*
     #outline(target: figure.where(kind: "test"), title: none)
   ]
-
   // 设置 figure 的下外间距
   #show figure: set block(below: 2em)
   #figure[
@@ -143,29 +155,23 @@
 === 引用编号格式问题
 
 在 @ch-3-章节标题 中提到过，Typst 中的编号分为计数符号、后缀以及前缀三个部分。
-而在引用时，编号仅会保留计数符号部分，例如：
+而在引用时，编号仅会保留计数符号部分。例如：
 
 #code-and-show(columns: (9fr, 5fr))[```typ
-  #math.equation(
-    numbering: "(a)",
-    block: true,
-  )[$
-      E = m upright(c)^2
-    $]<test-ref-issue-eq-wrong>
+  #set math.equation(numbering: "(a)")
+  $ E = m upright(c)^2 $<test-ref-wrong>
 
-  测试引用编号 @test-ref-issue-eq-wrong。
+  测试引用编号 @test-ref-wrong。
   ```]
 
 要保证引用的编号格式与设置的编号格式一致，可以使用函数而不是字符串。
 
 #code-and-show(columns: (9fr, 4fr))[```typ
-  #math.equation(
+  #set math.equation(
     numbering: it => numbering("(a)", it),
-    block: true,
-  )[$
-      E = m upright(c)^2
-    $]<test-ref-issue-eq-right>
+  )
+  $ E = m upright(c)^2 $<test-ref-right>
 
-  测试引用编号 @test-ref-issue-eq-right。
+  测试引用编号 @test-ref-right。
   ```]
 
