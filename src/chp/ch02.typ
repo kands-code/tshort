@@ -112,8 +112,6 @@ CJK 内容中的西文内容使用 New Computer Modern Sans 字体，
   换行会引入一个西文空格，可能会影响排版。
 ]
 
-
-
 为了更加符合中文排版习惯，还可以设置 `par` 函数的参数来修改段落的排版，
 例如调整首行缩进 `first-line-indent` 以及两端对齐 `justify`：
 

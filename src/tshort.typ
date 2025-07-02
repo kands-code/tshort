@@ -265,8 +265,8 @@
 // 目录手动使用一级标题
 = 目录
 
-// 一级标题与页码间使用空白填充
-#show outline.entry.where(level: 1): set outline.entry(fill: [])
+// 一级标题与页码间取消填充
+#show outline.entry.where(level: 1): set outline.entry(fill: none)
 // 一级标题显示为粗体
 #show outline.entry.where(level: 1): set text(weight: "bold")
 // 设置为双栏目录，不显示目录标题
@@ -453,7 +453,7 @@
 
 // 参考文献使用 gb-7714-2015-numeric 格式
 // 参考内容引用自 refs.bib 文件
-#bibliography(style: "gb-7714-2015-numeric", "refs.bib")<ch-1-reference>
+#bibliography(style: "gb-7714-2015-numeric", "refs.yaml")<ch-1-reference>
 #insert-page()
 
 // -----------

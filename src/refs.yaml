@@ -1,0 +1,127 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mkdjr/hayagriva/refs/heads/main/hayagriva.schema.json
+
+typst:
+  type: repository
+  title: "{Typst}"
+  author:
+    - "Mädje, Laurenz"
+    - "Haug, Martin"
+    - The Typst Project Developers
+  url: "https://github.com/typst/typst"
+  note: "License: Apache-2.0"
+
+tex:
+  type: book
+  title: "The {TeXbook}"
+  author: "Knuth, Donald E"
+  publisher:
+    name: Addison Wesley
+    location: "Boston, MA"
+  date: 1984-01
+  language: en
+  parent:
+    type: book
+    title: "Computers & typesetting"
+
+latex:
+  type: book
+  title: "{LaTeX}"
+  author: "Lamport, Leslie"
+  publisher:
+    name: Addison Wesley
+    location: "Boston, MA"
+  date: 1994-06
+  edition: 2
+  language: en
+
+markdown:
+  type: misc
+  title: "Markdown: A Text-to-HTML Conversion Tool and Formatting Syntax"
+  author: "Gruber, John"
+  date: 2004
+  url: "https://daringfireball.net/projects/markdown/"
+  note: "First released 2004, continuously developed"
+  parent:
+    type: web
+    title: Daring Fireball website
+
+unicode-techreport-23:
+  type: report
+  title: The Unicode Character Property Model
+  genre: Technical Report
+  author:
+    - "Whistler, Ken"
+    - "Freytag, Asmus"
+  organization: Unicode Consortium
+  edition: 15
+  serial-number: 23
+  date: 2022-11
+  url: "https://www.unicode.org/reports/tr23/"
+  parent:
+    type: report
+    title: Unicode Technical Report
+
+typst-symbols:
+  type: web
+  title: General Symbols
+  author: The Typst Project Developers
+  url:
+    value: "https://typst.app/docs/reference/symbols/sym/"
+    date: 2025-06-21
+  organization: Typst
+
+w3c-clreq-2025:
+  type: report
+  title:
+    value: 中文排版需求
+    short: Requirements for Chinese Text Layout
+  genre: Group Draft Note
+  editor:
+    - 薛富侨
+    - "Ishida, Richard"
+  organization: World Wide Web Consortium
+  date: 2025-06
+  url:
+    value: "https://www.w3.org/TR/clreq/"
+    date: 2025-07-02
+  note: "This is a draft document and may be updated, replaced, or obsoleted by other documents at any time. Latest published version: https://www.w3.org/TR/clreq/"
+
+gbt15834-2011:
+  type: legislation
+  title:
+    value: 标点符号用法
+    short: General rules for punctuation
+  genre: Standard
+  serial-number: "GB/T 15834-2011"
+  date: 2011-12-30
+  publisher:
+    name: 国家标准化管理委员会
+    location: "北京, 中国"
+  organization: 全国语言文字标准化技术委员会
+  url:
+    value: "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=22EA6D162E4110E752259661E1A0D0A8"
+    date: 2025-06-23
+  language: zh-Hans
+  note: "Issued by the General Administration of Quality Supervision, Inspection and Quarantine of the People's Republic of China and the Standardization Administration of China. Implemented on 2012-06-01."
+
+ctex-manual-2022:
+  type: reference
+  title: "{CTeX} 宏集手册"
+  author: CTeX Project
+  edition: "v2.5.10"
+  organization: CTeX Project
+  date: 2022-07-14
+  url:
+    value: https://texdoc.org/serve/ctex.pdf/0
+    date: 2025-06-30
+  language: zh-Hans
+
+hayagriva:
+  type: repository
+  title: "{Hayagriva}"
+  author:
+    - "Mädje, Laurenz"
+    - "Haug, Martin"
+    - The Hayagriva Project Developers
+  url: "https://github.com/typst/hayagriva"
+  note: "License: Apache-2.0 and MIT"
