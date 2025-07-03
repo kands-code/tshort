@@ -5,7 +5,7 @@ Typst @typst 是一个类似于 TeX@tex 的排版系统（Typesetting System）�
 Typst 还能够生成其他种类的文档 #footnote[
   详情可以参考 `page` 函数的 #link("https://typst.app/docs/reference/layout/page/#parameters-paper")[
     paper 参数
-  ]
+  ]。
 ]，小到简单的信件，大到完整的书籍。
 
 这份文档描述了 Typst 的使用，对 Typst 的大多数应用来说应该是足够了。

@@ -1215,7 +1215,7 @@ Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建�
     placement: bottom, kind: image, numbering: none,
   )[
     #block(width: 12em, height: 12em, radius: 6em, fill: gradient
-      .radial(..color.map.rocket)
+      .radial(..color.map.turbo)
       .repeat(4))
   ]
   #lorem(32)
@@ -1229,7 +1229,7 @@ Typst 在这之上提供了 `box` 和 `block` 等函数，让我们可以构建�
 #show-block[
   #figure(placement: bottom, caption: [_An example of gradient_], numbering: none, kind: image)[
     #block(width: 12em, height: 12em, radius: 6em, fill: gradient
-      .radial(..color.map.rocket)
+      .radial(..color.map.turbo)
       .repeat(4))
   ]
   #lorem(32)

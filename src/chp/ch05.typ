@@ -126,7 +126,7 @@ Typst 会根据内容的位置自动选择字体样式和字号。
 #code-and-show(columns: (9fr, 5fr))[```typ
   #set underline(
     stroke: 2pt + gradient
-      .linear(..color.map.crest),
+      .linear(..color.map.turbo),
   )
   #underline(lorem(8))
   ```]

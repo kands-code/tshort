@@ -6,7 +6,10 @@
 
 ## TODO
 
-- [ ] 完成大概内容编写，目前已完成前三章内容。
+- [ ] 暂停编写，直到参考文献能够正常显示，包括 [issues/312](https://github.com/typst/hayagriva/issues/312)、
+      [issues/339](https://github.com/typst/hayagriva/issues/339)、
+      [issues/291](https://github.com/typst/hayagriva/issues/291) 和 [issues/325](https://github.com/typst/hayagriva/issues/325)
+- [ ] 完成大概内容编写，目前已完成前五章内容。
 - [ ] 等 Typst 能够处理好[换行空格问题](https://github.com/typst/typst/issues/792)后重新排版和调整内容。
 
 ## 许可证
